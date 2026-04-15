@@ -40,29 +40,29 @@ function formatPrice(price: number) {
   return price.toString();
 }
 
-const SERVICE_STYLES: Record<
+const serviceStyles: Record<
   "buy" | "rent" | "offplan" | "management",
-  { box: string; icon: string; borderHover: string }
+  { bg: string; text: string; border: string }
 > = {
   buy: {
-    box: "bg-brand-blue/10",
-    icon: "text-brand-blue",
-    borderHover: "group-hover:border-brand-blue/35",
+    bg: "bg-brand-blue/10",
+    text: "text-brand-blue",
+    border: "hover:border-brand-blue/30",
   },
   rent: {
-    box: "bg-gold/10",
-    icon: "text-gold",
-    borderHover: "group-hover:border-gold/35",
+    bg: "bg-gold/10",
+    text: "text-gold",
+    border: "hover:border-gold/30",
   },
   offplan: {
-    box: "bg-emerald/10",
-    icon: "text-emerald",
-    borderHover: "group-hover:border-emerald/35",
+    bg: "bg-emerald/10",
+    text: "text-emerald",
+    border: "hover:border-emerald/30",
   },
   management: {
-    box: "bg-coral/10",
-    icon: "text-coral",
-    borderHover: "group-hover:border-coral/35",
+    bg: "bg-coral/10",
+    text: "text-coral",
+    border: "hover:border-coral/30",
   },
 };
 
@@ -129,24 +129,26 @@ export default function HomePage() {
             animate={fadeUp.animate}
             transition={{ ...fadeUp.transition, delay: 0 }}
           >
-            <span className="h-[1.5px] w-6 shrink-0 bg-gold" aria-hidden />
+            <div className="h-[2px] w-[24px] shrink-0 rounded-full bg-gold" aria-hidden />
             <div className="text-gold font-body font-bold text-xs tracking-[3px] uppercase">
               {t("hero.label")}
             </div>
-            <span className="h-[1.5px] w-6 shrink-0 bg-gold" aria-hidden />
+            <div className="h-[2px] w-[24px] shrink-0 rounded-full bg-gold" aria-hidden />
           </motion.div>
 
-          <motion.h1
-            className="font-display font-bold text-4xl sm:text-5xl md:text-6xl text-pearl leading-[1.1] mb-6"
+          <motion.div
+            className="mb-6"
             initial={fadeUp.initial}
             animate={fadeUp.animate}
             transition={{ ...fadeUp.transition, delay: 0.15 }}
           >
-            {t("hero.titleBefore")}
-            <span className="bg-gradient-to-r from-brand-blue to-gold bg-clip-text text-transparent">
-              {t("hero.titleHighlight")}
-            </span>
-          </motion.h1>
+            <h1 className="font-display font-bold text-4xl sm:text-5xl md:text-6xl leading-[1.1] text-pearl">
+              <span className="block">{t("hero.titleBefore").trimEnd()}</span>
+              <span className="mt-1 block bg-gradient-to-r from-brand-blue to-gold bg-clip-text text-transparent">
+                {t("hero.titleHighlight")}
+              </span>
+            </h1>
+          </motion.div>
 
           <motion.p
             className="font-body text-slate text-lg sm:text-xl max-w-2xl mx-auto mb-10"
@@ -175,23 +177,18 @@ export default function HomePage() {
                 {t("hero.searchBtn")}
               </button>
             </div>
-          </motion.div>
 
-          <motion.div
-            className="mt-8 flex flex-wrap justify-center gap-3"
-            initial={fadeUp.initial}
-            animate={fadeUp.animate}
-            transition={{ ...fadeUp.transition, delay: 0.6 }}
-          >
-            {["Apartment", "Villa", "Penthouse", "Townhouse", "Off-Plan"].map((type) => (
-              <button
-                key={type}
-                type="button"
-                className="rounded-full border border-brand-blue/15 px-4 py-2 text-xs font-semibold text-slate transition-all hover:border-brand-blue/30 hover:bg-brand-blue/5 hover:text-pearl"
-              >
-                {type}
-              </button>
-            ))}
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
+              {["Apartment", "Villa", "Penthouse", "Townhouse", "Off-Plan"].map((type) => (
+                <button
+                  key={type}
+                  type="button"
+                  className="rounded-full border border-brand-blue/15 px-4 py-2 text-xs font-semibold text-slate transition-all hover:border-brand-blue/30 hover:bg-brand-blue/5 hover:text-pearl"
+                >
+                  {type}
+                </button>
+              ))}
+            </div>
           </motion.div>
         </div>
 
@@ -236,21 +233,12 @@ export default function HomePage() {
                   </div>
                   <span className="badge-available absolute top-3 right-3">{t("property.available")}</span>
 
-                  <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy via-navy/70 to-transparent pb-3 pl-4 pr-14 pt-16">
+                  <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy-light/90 to-transparent pb-3 pl-4 pt-14">
                     <span className="font-mono text-lg font-semibold text-gold drop-shadow-md">
                       {formatPrice(prop.price)} AED
-                      {prop.type === "rent" ? "/yr" : ""}
+                      {prop.type === "rent" ? t("property.perYear") : ""}
                     </span>
                   </div>
-
-                  <button
-                    type="button"
-                    className="absolute bottom-3 right-3 z-20 flex h-9 w-9 items-center justify-center rounded-full border border-pearl/20 bg-navy/40 text-pearl backdrop-blur-sm transition-colors hover:border-gold/40 hover:bg-navy/60 hover:text-gold"
-                    aria-label="Favorite"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <Heart className="h-4 w-4" strokeWidth={1.75} />
-                  </button>
                 </div>
 
                 <div className="p-5">
@@ -273,7 +261,15 @@ export default function HomePage() {
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-end">
+                  <div className="flex items-center justify-between gap-3">
+                    <button
+                      type="button"
+                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-brand-blue/15 text-slate transition-colors hover:border-gold/40 hover:text-gold"
+                      aria-label={t("property.favorite")}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Heart className="h-4 w-4" strokeWidth={1.75} />
+                    </button>
                     <span className="inline-flex items-center gap-1 text-sm font-semibold text-brand-blue transition-all group-hover:gap-2">
                       {t("property.viewDetails")}
                       <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
@@ -314,16 +310,16 @@ export default function HomePage() {
                 { icon: Settings, key: "management" as const },
               ] as const
             ).map((svc) => {
-              const st = SERVICE_STYLES[svc.key];
+              const st = serviceStyles[svc.key];
               return (
                 <div
                   key={svc.key}
-                  className={`card group border p-8 transition-colors duration-300 hover:bg-navy-medium ${st.borderHover}`}
+                  className={`card group border p-8 transition-colors duration-300 hover:bg-navy-medium ${st.border}`}
                 >
                   <div
-                    className={`mb-5 flex h-12 w-12 items-center justify-center rounded-xl border border-transparent transition-all duration-300 group-hover:scale-110 ${st.box} ${st.borderHover}`}
+                    className={`mb-5 flex h-12 w-12 items-center justify-center rounded-xl transition-all duration-300 group-hover:scale-110 ${st.bg} ${st.text}`}
                   >
-                    <svc.icon className={`h-6 w-6 ${st.icon}`} />
+                    <svc.icon className="h-6 w-6" />
                   </div>
                   <h3 className="mb-3 font-display text-xl font-bold text-pearl">
                     {t(`services.${svc.key}.title`)}
@@ -362,7 +358,7 @@ export default function HomePage() {
           <div className="flex flex-col justify-center gap-4 sm:flex-row">
             <Link
               href="/contact"
-              className="btn-gold inline-flex items-center justify-center gap-2 !font-display !font-bold"
+              className="inline-flex items-center justify-center gap-2 rounded-btn bg-gold px-6 py-3 font-bold text-navy transition-all duration-200 hover:bg-gold-light active:scale-[0.98]"
             >
               {t("cta.btn")}
               <ArrowRight className="h-4 w-4" />
@@ -371,7 +367,7 @@ export default function HomePage() {
               href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-btn border border-emerald/30 px-6 py-3 font-body font-semibold text-emerald transition-colors duration-200 hover:bg-emerald/10"
+              className="inline-flex items-center justify-center gap-2 rounded-btn border border-emerald/30 px-6 py-3 font-body font-semibold text-emerald transition-colors duration-200 hover:bg-emerald/5"
             >
               <MessageCircle className="h-4 w-4 text-emerald" />
               {t("cta.whatsapp")}

@@ -9,10 +9,10 @@
     "contact": "Contact"
   },
   "hero": {
-    "label": "Immobilier Dubai",
+    "label": "Immobilier Dubaï",
     "titleBefore": "Trouvez votre ",
-    "titleHighlight": "bien d'exception à Dubai",
-    "subtitle": "Expertise de confiance pour acheter, louer et investir dans les quartiers les plus prestigieux de Dubai.",
+    "titleHighlight": "bien d'exception à Dubaï",
+    "subtitle": "Expertise de confiance pour acheter, louer et investir dans les quartiers les plus prestigieux de Dubaï.",
     "searchPlaceholder": "Rechercher par quartier, projet ou type...",
     "searchBtn": "Rechercher"
   },
@@ -26,7 +26,7 @@
     "title": "Solutions immobilières complètes",
     "buy": {
       "title": "Achat immobilier",
-      "desc": "Trouvez votre maison idéale ou votre investissement dans les communautés les plus prisées de Dubai."
+      "desc": "Trouvez votre maison idéale ou votre investissement dans les communautés les plus prisées de Dubaï."
     },
     "rent": {
       "title": "Location",
@@ -46,7 +46,7 @@
     },
     "advisory": {
       "title": "Conseil en investissement",
-      "desc": "Un accompagnement stratégique pour constituer et optimiser votre portefeuille immobilier à Dubai avec une approche data-driven."
+      "desc": "Un accompagnement stratégique pour constituer et optimiser votre portefeuille immobilier à Dubaï avec une approche data-driven."
     }
   },
   "servicesPage": {
@@ -160,7 +160,8 @@
     "similar": "Biens similaires",
     "ref": "Ref",
     "featured": "En vedette",
-    "perYear": "/an"
+    "perYear": "/an",
+    "favorite": "Ajouter aux favoris"
   },
   "propertiesPage": {
     "countFound": "{count, plural, one {# bien trouvé} other {# biens trouvés}}",

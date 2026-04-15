@@ -160,7 +160,8 @@
     "similar": "Similar Properties",
     "ref": "Ref",
     "featured": "Featured",
-    "perYear": "/yr"
+    "perYear": "/yr",
+    "favorite": "Add to favorites"
   },
   "propertiesPage": {
     "countFound": "{count, plural, one {# property found} other {# properties found}}",
