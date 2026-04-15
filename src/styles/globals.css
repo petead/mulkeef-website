@@ -4,15 +4,20 @@
 
 @layer base {
   :root {
-    --brand-blue: #1E4FD8;
+    --bg: #060D1B;
     --navy: #0A1628;
-    --navy-light: #111D33;
-    --gold: #D4A853;
-    --emerald: #34D399;
+    --navy-light: #0F1D35;
+    --blue: #1E4FD8;
+    --blue-glow: rgba(30, 79, 216, 0.12);
+    --gold: #C9A84C;
+    --gold-light: #E0C673;
+    --green: #34D399;
     --coral: #F87171;
-    --pearl: #F8FAFC;
-    --slate: #94A3B8;
-    --ice: #DBEAFE;
+    --pearl: #F0F2F5;
+    --white: #FFFFFF;
+    --slate: #7A8BA7;
+    --slate-dark: #4A5B73;
+    --border: rgba(30, 79, 216, 0.06);
   }
 
   html {
@@ -22,115 +27,190 @@
   }
 
   body {
-    @apply bg-navy text-pearl;
+    background: var(--bg);
+    color: var(--pearl);
   }
 
-  /* Scrollbar */
-  ::-webkit-scrollbar {
-    width: 6px;
-  }
-  ::-webkit-scrollbar-track {
-    background: var(--navy);
-  }
-  ::-webkit-scrollbar-thumb {
-    background: var(--brand-blue);
-    border-radius: 3px;
-  }
-
-  /* Selection */
   ::selection {
     background: rgba(30, 79, 216, 0.3);
-    color: var(--pearl);
+  }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--bg);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(30, 79, 216, 0.4);
+    border-radius: 2px;
   }
 }
 
 @layer components {
-  .btn-primary {
-    @apply bg-brand-blue text-white font-body font-bold
-           px-6 py-3 rounded-btn
-           hover:bg-brand-blue-light
-           transition-all duration-200
-           active:scale-[0.98];
+  .label {
+    @apply text-[10px] font-semibold uppercase tracking-[4px];
+    color: var(--gold);
+  }
+
+  .label-line {
+    @apply flex items-center gap-3;
+  }
+
+  .label-line::before {
+    content: "";
+    @apply h-px w-8;
+    background: var(--gold);
+  }
+
+  .title-xl {
+    font-family: var(--font-cormorant);
+    @apply text-5xl font-light leading-[1.05] tracking-tight md:text-7xl;
+    color: var(--white);
+  }
+
+  .title-lg {
+    font-family: var(--font-cormorant);
+    @apply text-4xl font-normal leading-[1.1] tracking-tight md:text-5xl;
+  }
+
+  .title-md {
+    font-family: var(--font-cormorant);
+    @apply text-2xl font-medium leading-tight md:text-3xl;
+  }
+
+  .title-italic {
+    @apply italic font-semibold;
   }
 
   .btn-gold {
-    @apply bg-gold text-navy font-body font-bold
-           px-6 py-3 rounded-btn
-           hover:bg-gold-light
-           transition-all duration-200
-           active:scale-[0.98];
+    @apply px-8 py-4 text-xs font-semibold uppercase tracking-[2px];
+    background: var(--gold);
+    color: var(--bg);
+    border: none;
+    border-radius: 0;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .btn-gold:hover {
+    background: var(--gold-light);
+    transform: translateY(-1px);
   }
 
   .btn-outline {
-    @apply border border-brand-blue/30 text-pearl font-body font-semibold
-           px-6 py-3 rounded-btn
-           hover:bg-brand-blue/10 hover:border-brand-blue/50
-           transition-all duration-200;
+    @apply px-8 py-4 text-xs font-semibold uppercase tracking-[2px];
+    color: var(--pearl);
+    background: transparent;
+    border: 1px solid rgba(240, 242, 245, 0.2);
+    border-radius: 0;
+    transition: all 0.3s ease;
+    cursor: pointer;
   }
 
-  .card {
-    @apply bg-navy-light border border-brand-blue/[0.08]
-           rounded-card overflow-hidden
-           transition-all duration-300
-           hover:border-brand-blue/20;
+  .btn-outline:hover {
+    border-color: rgba(240, 242, 245, 0.4);
+    background: rgba(240, 242, 245, 0.04);
   }
 
-  .section-label {
-    @apply text-gold font-body font-bold text-xs
-           tracking-[3px] uppercase;
+  .btn-whatsapp {
+    @apply btn-outline;
+    color: #34D399;
+    border-color: rgba(52, 211, 153, 0.3);
   }
 
-  .section-title {
-    @apply font-display font-bold text-3xl md:text-4xl
-           text-pearl leading-tight;
+  .btn-whatsapp:hover {
+    border-color: rgba(52, 211, 153, 0.5);
+    background: rgba(52, 211, 153, 0.05);
   }
 
-  .input-field {
-    @apply bg-navy-light border border-brand-blue/15
-           rounded-btn px-4 py-3 text-pearl font-body text-sm
-           placeholder:text-slate-dark
-           focus:outline-none focus:border-brand-blue/40
-           transition-colors duration-200;
+  .property-card {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .badge {
-    @apply inline-flex items-center px-2.5 py-0.5
-           rounded-md text-xs font-body font-semibold;
+  .property-card:hover {
+    transform: translateY(-8px) scale(1.005);
+    border-color: rgba(30, 79, 216, 0.15);
   }
 
-  .badge-available {
-    @apply badge bg-emerald/15 text-emerald;
+  .property-card img {
+    transition: transform 6s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .badge-sold {
-    @apply badge bg-coral/15 text-coral;
+  .property-card:hover img {
+    transform: scale(1.06);
   }
 
-  .badge-featured {
-    @apply badge bg-gold/15 text-gold;
+  .section {
+    @apply py-24 md:py-32;
   }
 
-  /* Animate on scroll */
-  .reveal {
+  .section-tight {
+    @apply py-16 md:py-24;
+  }
+
+  .divider {
+    border-top: 1px solid var(--border);
+  }
+
+  .price {
+    font-family: var(--font-jetbrains);
+    @apply text-lg font-medium;
+    color: var(--gold);
+  }
+
+  .nav-link {
+    @apply relative text-[13px] font-normal;
+    color: var(--slate);
+    letter-spacing: 0.5px;
+    transition: color 0.3s;
+  }
+
+  .nav-link::after {
+    content: "";
+    @apply absolute bottom-[-2px] left-0 h-[1.5px] w-0;
+    background: var(--gold);
+    transition: width 0.3s ease;
+  }
+
+  .nav-link:hover {
+    color: var(--pearl);
+  }
+
+  .nav-link:hover::after {
+    width: 100%;
+  }
+
+  .input-line {
+    @apply w-full border-0 border-b bg-transparent px-0 py-3 text-sm text-pearl outline-none;
+    border-color: rgba(240, 242, 245, 0.2);
+    border-radius: 0;
+    transition: border-color 0.3s ease;
+  }
+
+  .input-line:focus {
+    border-color: var(--gold);
+  }
+
+  .reveal-block {
     opacity: 0;
-    transform: translateY(24px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
+    transform: translateY(26px);
   }
 
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@layer utilities {
-  .text-gradient {
-    @apply bg-gradient-to-r from-brand-blue to-gold
-           bg-clip-text text-transparent;
-  }
-
-  .glass {
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+  .grain::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 }

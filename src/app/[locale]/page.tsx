@@ -1,50 +1,46 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
-import { useLocale } from "next-intl";
-import { motion } from "framer-motion";
-import {
-  Search,
-  Home,
-  Key,
-  Building2,
-  Settings,
-  ArrowRight,
-  MessageCircle,
-  Bed,
-  Bath,
-  Maximize,
-  Heart,
-} from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useLocale, useTranslations } from "next-intl";
+import { ArrowRight, Globe2, MessageCircle, ShieldCheck, Zap } from "lucide-react";
 import { Link } from "@/lib/i18n/routing";
 import { getSupabase } from "@/lib/supabase";
 import { WHATSAPP_URL } from "@/lib/utils";
 
-const fadeUp = {
-  initial: { opacity: 0, y: 24 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const },
+type HomeFeaturedProperty = {
+  id: string;
+  title: string;
+  neighborhood: string;
+  slug: string;
+  price: number;
+  bedrooms: number;
+  bathrooms: number;
+  area: number;
+  type: "sale" | "rent";
+  status: string;
+  images: { url: string; is_cover: boolean; position: number }[];
 };
 
-// Placeholder data until Supabase is connected
-const DEMO_PROPERTIES = [
-  { id: "1", title: "Modern Apartment in JVC", neighborhood: "Jumeirah Village Circle", price: 1200000, bedrooms: 2, bathrooms: 2, area: 1150, type: "sale" as const, status: "available", slug: "modern-apartment-jvc", images: [] as { url: string; is_cover: boolean; position: number }[] },
-  { id: "2", title: "Luxury Villa Palm Jumeirah", neighborhood: "Palm Jumeirah", price: 8500000, bedrooms: 5, bathrooms: 6, area: 5200, type: "sale" as const, status: "available", slug: "luxury-villa-palm", images: [] as { url: string; is_cover: boolean; position: number }[] },
-  { id: "3", title: "Studio Downtown Dubai", neighborhood: "Downtown Dubai", price: 75000, bedrooms: 0, bathrooms: 1, area: 450, type: "rent" as const, status: "available", slug: "studio-downtown", images: [] as { url: string; is_cover: boolean; position: number }[] },
-  { id: "4", title: "Penthouse Business Bay", neighborhood: "Business Bay", price: 12000000, bedrooms: 4, bathrooms: 5, area: 4800, type: "sale" as const, status: "available", slug: "penthouse-business-bay", images: [] as { url: string; is_cover: boolean; position: number }[] },
-  { id: "5", title: "Family Townhouse Arabian Ranches", neighborhood: "Arabian Ranches", price: 3200000, bedrooms: 3, bathrooms: 4, area: 2800, type: "sale" as const, status: "available", slug: "townhouse-arabian-ranches", images: [] as { url: string; is_cover: boolean; position: number }[] },
-  { id: "6", title: "Marina View Apartment", neighborhood: "Dubai Marina", price: 120000, bedrooms: 1, bathrooms: 1, area: 780, type: "rent" as const, status: "available", slug: "marina-view-apartment", images: [] as { url: string; is_cover: boolean; position: number }[] },
+const DEMO_PROPERTIES: HomeFeaturedProperty[] = [
+  { id: "1", title: "Modern Apartment in JVC", neighborhood: "Jumeirah Village Circle", price: 1200000, bedrooms: 2, bathrooms: 2, area: 1150, type: "sale", status: "available", slug: "modern-apartment-jvc", images: [] },
+  { id: "2", title: "Luxury Villa Palm Jumeirah", neighborhood: "Palm Jumeirah", price: 8500000, bedrooms: 5, bathrooms: 6, area: 5200, type: "sale", status: "available", slug: "luxury-villa-palm", images: [] },
+  { id: "3", title: "Studio Downtown Dubai", neighborhood: "Downtown Dubai", price: 75000, bedrooms: 0, bathrooms: 1, area: 450, type: "rent", status: "available", slug: "studio-downtown", images: [] },
+  { id: "4", title: "Penthouse Business Bay", neighborhood: "Business Bay", price: 12000000, bedrooms: 4, bathrooms: 5, area: 4800, type: "sale", status: "available", slug: "penthouse-business-bay", images: [] },
+  { id: "5", title: "Family Townhouse Arabian Ranches", neighborhood: "Arabian Ranches", price: 3200000, bedrooms: 3, bathrooms: 4, area: 2800, type: "sale", status: "available", slug: "townhouse-arabian-ranches", images: [] },
+  { id: "6", title: "Marina View Apartment", neighborhood: "Dubai Marina", price: 120000, bedrooms: 1, bathrooms: 1, area: 780, type: "rent", status: "available", slug: "marina-view-apartment", images: [] },
 ];
 
-type HomeFeaturedProperty = (typeof DEMO_PROPERTIES)[number];
+const revealEase = [0.16, 1, 0.3, 1] as const;
 
 function mapFeaturedProperty(row: Record<string, unknown>): HomeFeaturedProperty {
   const translation = Array.isArray(row.translation)
     ? (row.translation[0] as Record<string, string> | undefined)
     : (row.translation as Record<string, string> | undefined);
-  const images = ((row.images as { url: string; is_cover: boolean; position: number }[]) || [])
+  const images = (
+    (row.images as { url: string; is_cover: boolean; position: number }[]) || []
+  )
     .slice()
     .sort((a, b) => a.position - b.position);
 
@@ -64,48 +60,37 @@ function mapFeaturedProperty(row: Record<string, unknown>): HomeFeaturedProperty
 }
 
 function coverImageUrl(images: { url: string; is_cover: boolean; position: number }[]) {
-  const cover = images.find((img) => img.is_cover) ?? images[0];
+  const cover = images.find((img) => img.is_cover === true);
   return cover?.url ?? null;
 }
 
 function formatPrice(price: number) {
-  if (price >= 1000000) return (price / 1000000).toFixed(1).replace(".0", "") + "M";
-  if (price >= 1000) return (price / 1000).toFixed(0) + "K";
-  return price.toString();
+  if (price >= 1000000) return `${(price / 1000000).toFixed(1).replace(".0", "")}M`;
+  if (price >= 1000) return `${Math.round(price / 1000)}K`;
+  return `${price}`;
 }
 
-const serviceStyles: Record<
-  "buy" | "rent" | "offplan" | "management",
-  { bg: string; text: string; border: string }
-> = {
-  buy: {
-    bg: "bg-brand-blue/10",
-    text: "text-brand-blue",
-    border: "hover:border-brand-blue/30",
-  },
-  rent: {
-    bg: "bg-gold/10",
-    text: "text-gold",
-    border: "hover:border-gold/30",
-  },
-  offplan: {
-    bg: "bg-emerald/10",
-    text: "text-emerald",
-    border: "hover:border-emerald/30",
-  },
-  management: {
-    bg: "bg-coral/10",
-    text: "text-coral",
-    border: "hover:border-coral/30",
-  },
-};
-
-const STATS = [
-  { num: 500, labelKey: "stats.properties" as const },
-  { num: 1200, labelKey: "stats.clients" as const },
-  { num: 8, labelKey: "stats.experience" as const },
-  { num: 40, labelKey: "stats.communities" as const },
-];
+function Reveal({
+  children,
+  delay = 0,
+  className,
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}) {
+  return (
+    <motion.div
+      className={className}
+      initial={{ opacity: 0, y: 26 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.85, ease: revealEase, delay }}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
 export default function HomePage() {
   const t = useTranslations();
@@ -113,24 +98,43 @@ export default function HomePage() {
   const [featuredProperties, setFeaturedProperties] =
     useState<HomeFeaturedProperty[]>(DEMO_PROPERTIES);
 
+  const { scrollY } = useScroll();
+  const heroImageY = useTransform(scrollY, [0, 800], [0, 110]);
+  const heroImageScale = useTransform(scrollY, [0, 800], [1.06, 1.14]);
+  const heroCover = useMemo(
+    () => coverImageUrl(featuredProperties[0]?.images ?? []),
+    [featuredProperties]
+  );
+
   useEffect(() => {
     let cancelled = false;
 
     async function fetchFeaturedProperties() {
       try {
         const supabase = getSupabase();
-        const { data, error } = await supabase
-          .from("properties")
-          .select(
-            "*, translation:property_translations!inner(*), images:property_images(*)"
-          )
-          .eq("property_translations.locale", locale)
-          .eq("status", "available")
-          .not("published_at", "is", null)
-          .order("featured", { ascending: false })
-          .limit(6);
+        const baseQuery = () =>
+          supabase
+            .from("properties")
+            .select(
+              "*, translation:property_translations!inner(*), images:property_images(*)"
+            )
+            .eq("status", "available")
+            .not("published_at", "is", null)
+            .order("featured", { ascending: false })
+            .limit(6);
 
+        let { data, error } = await baseQuery().eq(
+          "property_translations.locale",
+          locale
+        );
         if (error) throw error;
+
+        if ((!data || data.length === 0) && locale !== "en") {
+          const fallback = await baseQuery().eq("property_translations.locale", "en");
+          if (fallback.error) throw fallback.error;
+          data = fallback.data;
+        }
+
         if (!cancelled && data && data.length > 0) {
           setFeaturedProperties(
             data.map((row) => mapFeaturedProperty(row as Record<string, unknown>))
@@ -151,324 +155,271 @@ export default function HomePage() {
   }, [locale]);
 
   return (
-    <>
-      {/* ========== HERO ========== */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-navy-gradient" />
-
-        {/* Animated radial gradients */}
-        <motion.div
-          className="pointer-events-none absolute -left-1/4 top-0 h-[70vh] w-[70vh] rounded-full"
-          style={{
-            background: "radial-gradient(circle, rgba(30,79,216,0.28) 0%, rgba(22,64,176,0.12) 35%, transparent 65%)",
-          }}
-          animate={{ x: [0, 48, 0], y: [0, 32, 0], opacity: [0.55, 0.85, 0.55] }}
-          transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="pointer-events-none absolute -right-1/4 bottom-0 h-[65vh] w-[65vh] rounded-full"
-          style={{
-            background: "radial-gradient(circle, rgba(22,64,176,0.22) 0%, rgba(10,22,40,0.2) 40%, transparent 68%)",
-          }}
-          animate={{ x: [0, -40, 0], y: [0, -28, 0], opacity: [0.4, 0.7, 0.4] }}
-          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-        />
-        <motion.div
-          className="pointer-events-none absolute left-1/3 top-1/3 h-[50vh] w-[50vh] rounded-full"
-          style={{
-            background: "radial-gradient(circle, rgba(212,168,83,0.08) 0%, transparent 60%)",
-          }}
-          animate={{ scale: [1, 1.08, 1], opacity: [0.35, 0.55, 0.35] }}
-          transition={{ duration: 16, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-        />
-
-        {/* Subtle grid overlay */}
-        <div
-          className="pointer-events-none absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage: `linear-gradient(to right, rgb(248 250 252) 1px, transparent 1px), linear-gradient(to bottom, rgb(248 250 252) 1px, transparent 1px)`,
-            backgroundSize: "48px 48px",
-          }}
-          aria-hidden
-        />
-
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(30,79,216,0.1),_transparent_55%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_rgba(212,168,83,0.05),_transparent_50%)]" />
-
-        {/* Content */}
-        <div className="relative z-10 max-w-4xl mx-auto px-4 text-center pt-20">
+    <div className="bg-[#060D1B] pt-20">
+      <section className="relative h-[100vh] min-h-[700px] overflow-hidden">
+        {heroCover ? (
           <motion.div
-            className="mb-6 flex items-center justify-center gap-3"
-            initial={fadeUp.initial}
-            animate={fadeUp.animate}
-            transition={{ ...fadeUp.transition, delay: 0 }}
+            style={{ y: heroImageY, scale: heroImageScale }}
+            className="absolute inset-0"
           >
-            <div className="h-[2px] w-[24px] shrink-0 rounded-full bg-gold" aria-hidden />
-            <div className="text-gold font-body font-bold text-xs tracking-[3px] uppercase">
-              {t("hero.label")}
-            </div>
-            <div className="h-[2px] w-[24px] shrink-0 rounded-full bg-gold" aria-hidden />
+            <Image
+              src={heroCover}
+              alt={featuredProperties[0]?.title || "Dubai Property"}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover brightness-[0.35] contrast-110"
+            />
           </motion.div>
+        ) : (
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_35%,rgba(30,79,216,0.35),transparent_42%),linear-gradient(130deg,#060D1B_0%,#0A1628_45%,#0F1D35_100%)]" />
+        )}
 
-          <motion.div
-            className="mb-6"
-            initial={fadeUp.initial}
-            animate={fadeUp.animate}
-            transition={{ ...fadeUp.transition, delay: 0.15 }}
-          >
-            <h1 className="font-display font-bold text-4xl sm:text-5xl md:text-6xl leading-[1.1] text-pearl">
-              <span className="block">{t("hero.titleBefore").trimEnd()}</span>
-              <span className="mt-1 block bg-gradient-to-r from-brand-blue to-gold bg-clip-text text-transparent">
-                {t("hero.titleHighlight")}
-              </span>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(30,79,216,0.22),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(6,13,27,0.82)_0%,rgba(6,13,27,0.35)_45%,#060D1B_100%)]" />
+
+        <div className="relative z-10 mx-auto flex h-full w-full max-w-[1280px] flex-col justify-end px-5 pb-20 md:px-8">
+          <Reveal>
+            <div className="label-line label mb-8">
+              <span className="w-12" />
+              <span>LUXURY REAL ESTATE</span>
+            </div>
+          </Reveal>
+
+          <Reveal delay={0.1}>
+            <h1 className="title-xl max-w-[700px]">
+              Discover
+              <br />
+              <span className="title-italic">Exceptional</span>
+              <br />
+              Living in Dubai
             </h1>
-          </motion.div>
+          </Reveal>
 
-          <motion.p
-            className="font-body text-slate text-lg sm:text-xl max-w-2xl mx-auto mb-10"
-            initial={fadeUp.initial}
-            animate={fadeUp.animate}
-            transition={{ ...fadeUp.transition, delay: 0.3 }}
-          >
-            {t("hero.subtitle")}
-          </motion.p>
+          <Reveal delay={0.2}>
+            <p className="mt-6 max-w-[480px] text-base font-light leading-relaxed text-slate">
+              {t("hero.subtitle")}
+            </p>
+          </Reveal>
 
-          <motion.div
-            initial={fadeUp.initial}
-            animate={fadeUp.animate}
-            transition={{ ...fadeUp.transition, delay: 0.45 }}
-          >
-            <div className="flex flex-col sm:flex-row max-w-xl mx-auto gap-3 sm:gap-0 sm:bg-navy-light sm:border sm:border-brand-blue/15 sm:rounded-[14px] sm:p-1.5">
-              <div className="relative flex-1">
-                <Search className="pointer-events-none absolute left-4 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-slate-dark" />
-                <input
-                  type="text"
-                  placeholder={t("hero.searchPlaceholder")}
-                  className="w-full pl-11 pr-4 py-3.5 bg-navy-light sm:bg-transparent border border-brand-blue/15 sm:border-none rounded-btn sm:rounded-none text-sm text-pearl placeholder:text-slate-dark focus:outline-none"
-                />
-              </div>
-              <button type="button" className="btn-primary sm:!rounded-[10px] flex items-center justify-center gap-2">
-                {t("hero.searchBtn")}
-              </button>
+          <Reveal delay={0.3}>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link href="/properties" className="btn-gold">
+                VIEW PROPERTIES
+              </Link>
+              <Link href="/contact" className="btn-outline">
+                BOOK CONSULTATION
+              </Link>
             </div>
+          </Reveal>
 
-            <div className="mt-8 flex flex-wrap justify-center gap-3">
-              {["Apartment", "Villa", "Penthouse", "Townhouse", "Off-Plan"].map((type) => (
-                <button
-                  key={type}
-                  type="button"
-                  className="rounded-full border border-brand-blue/15 px-4 py-2 text-xs font-semibold text-slate transition-all hover:border-brand-blue/30 hover:bg-brand-blue/5 hover:text-pearl"
-                >
-                  {type}
-                </button>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-          <div className="flex h-10 w-6 justify-center rounded-full border-2 border-brand-blue/30 pt-2">
-            <div className="h-2.5 w-1 rounded-full bg-brand-blue/50" />
-          </div>
-        </div>
-      </section>
-
-      {/* ========== FEATURED PROPERTIES ========== */}
-      <section className="bg-navy py-20 lg:py-28">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-14 text-center">
-            <div className="mb-3 text-gold font-body font-bold text-xs tracking-[3px] uppercase">
-              {t("featured.label")}
-            </div>
-            <h2 className="font-display font-bold text-3xl md:text-4xl text-pearl leading-tight">
-              {t("featured.title")}
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {featuredProperties.map((prop, i) => (
-              <article
-                key={prop.id}
-                className="card group relative cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:border-brand-blue/25 hover:shadow-lg"
-                style={{ animationDelay: `${i * 0.1}s` }}
-              >
-                <div className="relative h-52 overflow-hidden bg-gradient-to-br from-brand-blue/15 to-gold/5">
-                  {coverImageUrl(prop.images) ? (
-                    <Image
-                      src={coverImageUrl(prop.images)!}
-                      alt={prop.title}
-                      fill
-                      sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-                      className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-                    />
-                  ) : null}
-                  <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/20 to-brand-blue/10 opacity-90 transition-opacity duration-500 group-hover:opacity-100" />
-                  <div className="absolute inset-0 bg-navy-gradient opacity-25 transition-opacity duration-500 group-hover:opacity-50" />
-
-                  <div className="absolute top-3 left-3 flex gap-2">
-                    <span
-                      className={
-                        prop.type === "sale" ? "badge-featured" : "badge bg-brand-blue/20 text-brand-blue"
-                      }
-                    >
-                      {prop.type === "sale" ? t("property.forSale") : t("property.forRent")}
-                    </span>
-                  </div>
-                  <span className="badge-available absolute top-3 right-3">{t("property.available")}</span>
-
-                  <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy-light/90 to-transparent pb-3 pl-4 pt-14">
-                    <span className="font-mono text-lg font-semibold text-gold drop-shadow-md">
-                      {formatPrice(prop.price)} AED
-                      {prop.type === "rent" ? t("property.perYear") : ""}
-                    </span>
-                  </div>
+          <div className="absolute bottom-20 right-5 text-right md:right-8">
+            {[
+              { value: "500+", label: t("stats.properties") },
+              { value: "1200+", label: t("stats.clients") },
+              { value: "40+", label: t("stats.communities") },
+            ].map((stat, i) => (
+              <Reveal key={stat.value} delay={0.2 + i * 0.1}>
+                <div className="mb-4">
+                  <p className="font-mono text-2xl text-gold">{stat.value}</p>
+                  <p className="text-[11px] uppercase tracking-[2px] text-slate-dark">
+                    {stat.label}
+                  </p>
                 </div>
-
-                <div className="p-5">
-                  <h3 className="mb-1 font-display text-lg font-bold text-pearl transition-colors group-hover:text-brand-blue-light">
-                    {prop.title}
-                  </h3>
-                  <p className="mb-4 text-sm text-slate">{prop.neighborhood}</p>
-
-                  <div className="mb-4 flex items-center gap-4 text-xs text-slate">
-                    {prop.bedrooms > 0 && (
-                      <span className="flex items-center gap-1">
-                        <Bed className="h-3.5 w-3.5" /> {prop.bedrooms}
-                      </span>
-                    )}
-                    <span className="flex items-center gap-1">
-                      <Bath className="h-3.5 w-3.5" /> {prop.bathrooms}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Maximize className="h-3.5 w-3.5" /> {prop.area.toLocaleString()} sqft
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between gap-3">
-                    <button
-                      type="button"
-                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-brand-blue/15 text-slate transition-colors hover:border-gold/40 hover:text-gold"
-                      aria-label={t("property.favorite")}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <Heart className="h-4 w-4" strokeWidth={1.75} />
-                    </button>
-                    <span className="inline-flex items-center gap-1 text-sm font-semibold text-brand-blue transition-all group-hover:gap-2">
-                      {t("property.viewDetails")}
-                      <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
-                    </span>
-                  </div>
-                </div>
-              </article>
+              </Reveal>
             ))}
           </div>
+        </div>
 
-          <div className="mt-12 text-center">
-            <Link href="/properties" className="btn-outline inline-flex items-center gap-2">
-              {t("featured.viewAll")}
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
+        <div className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-1">
+          <motion.div
+            className="h-12 w-px bg-gradient-to-b from-transparent via-pearl/60 to-transparent"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.2, duration: 1.2 }}
+          />
+          <span className="text-[9px] uppercase tracking-[3px] text-slate">
+            Scroll
+          </span>
         </div>
       </section>
 
-      {/* ========== SERVICES ========== */}
-      <section className="bg-navy-light py-20 lg:py-28">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-14 text-center">
-            <div className="mb-3 text-gold font-body font-bold text-xs tracking-[3px] uppercase">
-              {t("services.label")}
+      <section className="section">
+        <div className="mx-auto w-full max-w-[1280px] px-5 md:px-8">
+          <Reveal className="mb-12 flex items-end justify-between gap-8">
+            <div>
+              <div className="label-line label mb-4">
+                <span>FEATURED</span>
+              </div>
+              <h2 className="title-lg">
+                Handpicked <span className="title-italic">Properties</span>
+              </h2>
             </div>
-            <h2 className="font-display font-bold text-3xl md:text-4xl text-pearl leading-tight">
-              {t("services.title")}
-            </h2>
-          </div>
+            <Link
+              href="/properties"
+              className="inline-flex items-center gap-2 text-sm uppercase tracking-[2px] text-gold"
+            >
+              View All <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Reveal>
 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            {(
-              [
-                { icon: Home, key: "buy" as const },
-                { icon: Key, key: "rent" as const },
-                { icon: Building2, key: "offplan" as const },
-                { icon: Settings, key: "management" as const },
-              ] as const
-            ).map((svc) => {
-              const st = serviceStyles[svc.key];
+            {featuredProperties.slice(0, 4).map((prop, index) => {
+              const coverUrl = coverImageUrl(prop.images);
               return (
-                <div
-                  key={svc.key}
-                  className={`card group border p-8 transition-colors duration-300 hover:bg-navy-medium ${st.border}`}
-                >
-                  <div
-                    className={`mb-5 flex h-12 w-12 items-center justify-center rounded-xl transition-all duration-300 group-hover:scale-110 ${st.bg} ${st.text}`}
+                <Reveal key={prop.id} delay={0.08 * index}>
+                  <Link
+                    href={`/properties/${prop.slug}`}
+                    className="property-card block"
+                    style={{
+                      height: index < 2 ? "420px" : "320px",
+                    }}
                   >
-                    <svc.icon className="h-6 w-6" />
-                  </div>
-                  <h3 className="mb-3 font-display text-xl font-bold text-pearl">
-                    {t(`services.${svc.key}.title`)}
-                  </h3>
-                  <p className="text-sm leading-relaxed text-slate">{t(`services.${svc.key}.desc`)}</p>
-                </div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-brand-blue/20 to-gold/10" />
+                    {coverUrl ? (
+                      <Image
+                        src={coverUrl}
+                        alt={prop.title}
+                        fill
+                        sizes="(min-width: 768px) 50vw, 100vw"
+                        className="object-cover"
+                      />
+                    ) : null}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#060D1B]/95 via-[#060D1B]/20 to-transparent" />
+
+                    <div className="absolute left-4 top-4">
+                      <span
+                        className={
+                          prop.type === "sale"
+                            ? "bg-gold px-3 py-1 text-[10px] font-semibold uppercase tracking-[2px] text-[#060D1B]"
+                            : "border border-pearl/30 bg-pearl/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[2px] text-pearl backdrop-blur-sm"
+                        }
+                      >
+                        {prop.type === "sale" ? "FOR SALE" : "FOR RENT"}
+                      </span>
+                    </div>
+
+                    <div className="absolute inset-x-0 bottom-0 p-5">
+                      <p className="mb-1 text-[10px] uppercase tracking-[3px] text-gold">
+                        {prop.neighborhood}
+                      </p>
+                      <h3 className="title-md text-white">{prop.title}</h3>
+                      <p className="mt-2 opacity-0 transition-opacity delay-75 duration-300 group-hover:opacity-100 text-xs text-slate">
+                        {prop.bedrooms > 0 ? `${prop.bedrooms} Bed · ` : ""}
+                        {prop.bathrooms} Bath · {prop.area.toLocaleString()} sqft
+                      </p>
+                      <p className="price mt-3">
+                        {formatPrice(prop.price)} AED
+                        {prop.type === "rent" ? " /yr" : ""}
+                      </p>
+                    </div>
+                  </Link>
+                </Reveal>
               );
             })}
           </div>
         </div>
       </section>
 
-      {/* ========== STATS ========== */}
-      <section className="border-y border-brand-blue/10 bg-navy py-20 lg:py-28">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6">
-          <div className="grid grid-cols-2 gap-8 text-center lg:grid-cols-4">
-            {STATS.map((stat, i) => (
-              <div key={i}>
-                <div className="mb-2 font-mono text-3xl font-bold text-gold lg:text-4xl">
-                  {stat.num.toLocaleString("en-US")}+
-                </div>
-                <div className="text-sm text-slate">{t(stat.labelKey)}</div>
-              </div>
+      <section className="section-tight divider">
+        <div className="mx-auto w-full max-w-[1280px] px-5 md:px-8">
+          <Reveal className="mb-10">
+            <div className="label-line label mb-4">
+              <span>SERVICES</span>
+            </div>
+          </Reveal>
+          <div className="grid grid-cols-1 divide-y divide-brand-blue/10 border-y border-brand-blue/10 md:grid-cols-4 md:divide-x md:divide-y-0">
+            {(["buy", "rent", "offplan", "management"] as const).map((key, index) => (
+              <Reveal key={key} delay={index * 0.08}>
+                <article className="group min-h-[280px] bg-transparent px-6 py-8 transition-colors hover:bg-[#0F1D35]">
+                  <p className="font-mono text-sm text-brand-blue">{`0${index + 1}`}</p>
+                  <h3 className="mt-6 font-display text-[32px] leading-none text-pearl">
+                    {t(`services.${key}.title`)}
+                  </h3>
+                  <p className="mt-5 text-[13px] leading-relaxed text-slate">
+                    {t(`services.${key}.desc`)}
+                  </p>
+                  <p className="mt-8 inline-flex items-center gap-2 text-xs uppercase tracking-[2px] text-gold">
+                    Learn more <ArrowRight className="h-3.5 w-3.5" />
+                  </p>
+                </article>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ========== CTA ========== */}
-      <section className="relative overflow-hidden py-20 lg:py-28">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,rgba(30,79,216,0.08),transparent_55%)]" />
-
-        <div className="relative z-10 mx-auto max-w-3xl px-4 text-center">
-          <h2 className="mb-5 font-display text-3xl font-bold text-pearl sm:text-4xl">{t("cta.title")}</h2>
-          <p className="mx-auto mb-10 max-w-xl text-lg text-slate">{t("cta.subtitle")}</p>
-          <div className="flex flex-col justify-center gap-4 sm:flex-row">
-            <Link
-              href="/contact"
-              className="inline-flex items-center justify-center gap-2 rounded-btn bg-gold px-6 py-3 font-bold text-navy transition-all duration-200 hover:bg-gold-light active:scale-[0.98]"
-            >
-              {t("cta.btn")}
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-            <a
-              href={WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-btn border border-emerald/30 px-6 py-3 font-body font-semibold text-emerald transition-colors duration-200 hover:bg-emerald/5"
-            >
-              <MessageCircle className="h-4 w-4 text-emerald" />
-              {t("cta.whatsapp")}
-            </a>
+      <section className="section relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(30,79,216,0.2),transparent_55%)]" />
+        <div className="relative mx-auto w-full max-w-[980px] px-5 text-center md:px-8">
+          <Reveal className="mb-5 flex items-center justify-center gap-3">
+            <span className="h-px w-12 bg-gold" />
+            <span className="label">WHY MULKEEF</span>
+            <span className="h-px w-12 bg-gold" />
+          </Reveal>
+          <Reveal delay={0.1}>
+            <h2 className="title-lg">
+              Your trusted partner for
+              <br />
+              <span className="title-italic">real estate in Dubai</span>
+            </h2>
+          </Reveal>
+          <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-3">
+            {[
+              { icon: ShieldCheck, label: "RERA LICENSED" },
+              { icon: Globe2, label: "10+ LANGUAGES" },
+              { icon: Zap, label: "FAST EXECUTION" },
+            ].map((item, idx) => (
+              <Reveal key={item.label} delay={0.2 + idx * 0.08}>
+                <div className="flex items-center justify-center gap-2 border border-brand-blue/10 px-4 py-4 text-[11px] uppercase tracking-[2px] text-pearl">
+                  <item.icon className="h-4 w-4 text-gold" />
+                  {item.label}
+                </div>
+              </Reveal>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ========== WHATSAPP FLOATING BUTTON ========== */}
+      <section className="section-tight divider">
+        <div className="mx-auto w-full max-w-[900px] px-5 text-center md:px-8">
+          <Reveal>
+            <h2 className="title-lg">
+              Begin your <span className="title-italic">property journey</span>
+            </h2>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <p className="mx-auto mt-5 max-w-[520px] text-sm leading-relaxed text-slate">
+              {t("cta.subtitle")}
+            </p>
+          </Reveal>
+          <Reveal delay={0.2}>
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
+              <Link href="/contact" className="btn-gold">
+                {t("cta.btn")}
+              </Link>
+              <a
+                href={WHATSAPP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-whatsapp"
+              >
+                {t("cta.whatsapp")}
+              </a>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
       <a
         href={WHATSAPP_URL}
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-emerald shadow-lg shadow-emerald/25 transition-transform hover:scale-110"
+        className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-[#060D1B] shadow-[0_10px_30px_-10px_rgba(37,211,102,0.8)] transition-transform duration-300 hover:scale-105"
         aria-label="Chat on WhatsApp"
       >
-        <MessageCircle className="h-6 w-6 text-navy" />
+        <MessageCircle className="h-6 w-6" />
       </a>
-    </>
+    </div>
   );
 }

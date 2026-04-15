@@ -5,30 +5,29 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Brand — Royal Blue Palette
         brand: {
           blue: "#1E4FD8",
-          "blue-light": "#3B6EF0",
-          "blue-dark": "#1640B0",
+          "blue-light": "#4A7BFF",
+          "blue-dark": "#173B97",
         },
         navy: {
-          DEFAULT: "#0A1628",
-          light: "#111D33",
-          medium: "#152240",
+          DEFAULT: "#060D1B",
+          light: "#0A1628",
+          medium: "#0F1D35",
         },
-        ice: "#DBEAFE",
+        ice: "#D5DFF7",
         gold: {
-          DEFAULT: "#D4A853",
-          light: "#E8C87A",
-          dark: "#B8903D",
+          DEFAULT: "#C9A84C",
+          light: "#E0C673",
+          dark: "#A88A3A",
         },
         emerald: "#34D399",
         coral: "#F87171",
-        pearl: "#F8FAFC",
+        pearl: "#F0F2F5",
         slate: {
-          DEFAULT: "#94A3B8",
-          dark: "#64748B",
-          light: "#CBD5E1",
+          DEFAULT: "#7A8BA7",
+          dark: "#4A5B73",
+          light: "#A7B4C8",
         },
       },
       fontFamily: {
@@ -58,15 +57,15 @@ const config: Config = {
       },
       backgroundImage: {
         "hero-gradient":
-          "linear-gradient(180deg, #0A1628 0%, transparent 40%, rgba(10,22,40,0.6) 100%)",
+          "linear-gradient(180deg, rgba(6,13,27,0.85) 0%, transparent 44%, rgba(6,13,27,0.92) 100%)",
         "card-gradient":
-          "linear-gradient(135deg, rgba(30,79,216,0.08), rgba(212,168,83,0.04))",
+          "linear-gradient(135deg, rgba(30,79,216,0.08), rgba(201,168,76,0.05))",
         "navy-gradient":
-          "linear-gradient(180deg, #0A1628, #111D33)",
+          "linear-gradient(180deg, #060D1B, #0A1628)",
       },
       borderRadius: {
-        card: "14px",
-        btn: "10px",
+        card: "2px",
+        btn: "0px",
       },
     },
   },

@@ -2,13 +2,30 @@
 
 import { useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/routing";
-import { Instagram, Facebook, Linkedin, Youtube, MessageCircle } from "lucide-react";
+import { Instagram, Linkedin, MessageCircle, Youtube } from "lucide-react";
+import { WHATSAPP_URL } from "@/lib/utils";
 
-const socials = [
-  { icon: Instagram, href: "https://instagram.com/mulkeef", label: "Instagram" },
-  { icon: Facebook, href: "https://facebook.com/mulkeef", label: "Facebook" },
-  { icon: Linkedin, href: "https://linkedin.com/company/mulkeef", label: "LinkedIn" },
-  { icon: Youtube, href: "https://youtube.com/@mulkeef", label: "YouTube" },
+const connectLinks = [
+  {
+    label: "Instagram",
+    href: "https://instagram.com/mulkeef",
+    icon: Instagram,
+  },
+  {
+    label: "LinkedIn",
+    href: "https://linkedin.com/company/mulkeef",
+    icon: Linkedin,
+  },
+  {
+    label: "YouTube",
+    href: "https://youtube.com/@mulkeef",
+    icon: Youtube,
+  },
+  {
+    label: "WhatsApp",
+    href: WHATSAPP_URL,
+    icon: MessageCircle,
+  },
 ];
 
 export default function Footer() {
@@ -16,107 +33,74 @@ export default function Footer() {
   const nav = useTranslations("nav");
 
   return (
-    <footer className="bg-navy border-t border-brand-blue/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-          {/* Brand */}
-          <div className="lg:col-span-1">
-            <span className="font-display font-bold text-2xl text-brand-blue">
-              MULKEEF
-            </span>
-            <p className="mt-4 text-slate text-sm leading-relaxed">
+    <footer className="divider bg-[#060D1B]">
+      <div className="mx-auto max-w-[1280px] px-5 pb-10 pt-16 md:px-8 md:pt-20">
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-4">
+          <div>
+            <p className="font-display text-3xl tracking-[2px] text-white">MULKEEF</p>
+            <p className="mt-4 max-w-xs text-[13px] font-light leading-relaxed text-slate-dark">
               {t("tagline")}
             </p>
-            <div className="mt-4 inline-flex items-center gap-2 text-gold text-xs font-semibold tracking-wider uppercase">
-              <div className="w-1.5 h-1.5 rounded-full bg-gold" />
-              {t("rera")}
+          </div>
+
+          <div>
+            <p className="label">Properties</p>
+            <div className="mt-5 space-y-3">
+              <Link href="/properties?listing=sale" className="block text-[13px] font-light text-slate-dark transition-colors hover:text-pearl">
+                {nav("buy")}
+              </Link>
+              <Link href="/properties?listing=rent" className="block text-[13px] font-light text-slate-dark transition-colors hover:text-pearl">
+                {nav("rent")}
+              </Link>
+              <Link href="/properties" className="block text-[13px] font-light text-slate-dark transition-colors hover:text-pearl">
+                {t("quickLinks")}
+              </Link>
             </div>
           </div>
 
-          {/* Quick Links */}
           <div>
-            <h4 className="font-body font-bold text-sm text-pearl mb-4">
-              {t("quickLinks")}
-            </h4>
-            <div className="space-y-3">
-              {[
-                { label: nav("buy"), href: "/properties?type=sale" },
-                { label: nav("rent"), href: "/properties?type=rent" },
-                { label: nav("offplan"), href: "/off-plan" },
-                { label: nav("services"), href: "/services" },
-                { label: nav("blog"), href: "/blog" },
-              ].map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="block text-sm text-slate hover:text-pearl transition-colors"
-                >
-                  {link.label}
-                </Link>
-              ))}
+            <p className="label">Company</p>
+            <div className="mt-5 space-y-3">
+              <Link href="/about" className="block text-[13px] font-light text-slate-dark transition-colors hover:text-pearl">
+                {nav("about")}
+              </Link>
+              <Link href="/services" className="block text-[13px] font-light text-slate-dark transition-colors hover:text-pearl">
+                {nav("services")}
+              </Link>
+              <Link href="/contact" className="block text-[13px] font-light text-slate-dark transition-colors hover:text-pearl">
+                {nav("contact")}
+              </Link>
             </div>
           </div>
 
-          {/* Contact */}
           <div>
-            <h4 className="font-body font-bold text-sm text-pearl mb-4">
-              {t("contactUs")}
-            </h4>
-            <div className="space-y-3 text-sm text-slate">
-              <p>Dubai, United Arab Emirates</p>
-              <a
-                href="mailto:info@mulkeef.com"
-                className="block hover:text-brand-blue transition-colors"
-              >
-                info@mulkeef.com
-              </a>
-              <a
-                href="https://wa.me/971585765719"
-                target="_blank"
-                rel="noopener"
-                className="inline-flex items-center gap-2 hover:text-emerald transition-colors"
-              >
-                <MessageCircle className="w-4 h-4" />
-                WhatsApp
-              </a>
-            </div>
-          </div>
-
-          {/* Social */}
-          <div>
-            <h4 className="font-body font-bold text-sm text-pearl mb-4">
-              {t("followUs")}
-            </h4>
-            <div className="flex gap-3">
-              {socials.map((s) => (
+            <p className="label">Connect</p>
+            <div className="mt-5 space-y-3">
+              {connectLinks.map((item) => (
                 <a
-                  key={s.label}
-                  href={s.href}
+                  key={item.label}
+                  href={item.href}
                   target="_blank"
-                  rel="noopener"
-                  className="w-10 h-10 rounded-lg bg-navy-light border border-brand-blue/10 flex items-center justify-center text-slate hover:text-brand-blue hover:border-brand-blue/30 transition-all"
-                  aria-label={s.label}
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-[13px] font-light text-slate-dark transition-colors hover:text-pearl"
                 >
-                  <s.icon className="w-4 h-4" />
+                  <item.icon className="h-3.5 w-3.5" />
+                  {item.label}
                 </a>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Bottom */}
-        <div className="mt-12 pt-8 border-t border-brand-blue/10 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-slate-dark">
+        <div className="mt-14 flex flex-col items-start justify-between gap-2 border-t border-brand-blue/10 pt-6 text-xs text-slate-dark md:flex-row">
+          <p>
             &copy; {new Date().getFullYear()} MULKEEF Real Estate LLC. {t("rights")}
           </p>
-          <p className="text-xs text-slate-dark">
-            www.mulkeef.com
-          </p>
+          <p>Dubai, UAE</p>
         </div>
       </div>
 
-      {/* Brand accent bottom bar */}
-      <div className="h-1 bg-gradient-to-r from-brand-blue via-gold to-brand-blue" />
+      <div className="h-px bg-gradient-to-r from-brand-blue via-gold to-brand-blue" />
     </footer>
   );
 }

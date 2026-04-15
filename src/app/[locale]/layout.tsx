@@ -26,7 +26,7 @@ export default async function LocaleLayout({
   const isRTL = locale === "ar";
 
   return (
-    <div dir={isRTL ? "rtl" : "ltr"} lang={locale}>
+    <div dir={isRTL ? "rtl" : "ltr"} lang={locale} className="grain">
       <NextIntlClientProvider messages={messages}>
         <Header />
         <main className="min-h-screen">{children}</main>

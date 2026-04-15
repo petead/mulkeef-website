@@ -1,10 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { useTranslations, useLocale } from "next-intl";
-import { Link, usePathname, useRouter } from "@/lib/i18n/routing";
-import { locales, localeFlags, localeNames, type Locale } from "@/lib/i18n/routing";
-import { Menu, X, Globe, ChevronDown } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Menu, X } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
+import {
+  Link,
+  usePathname,
+  useRouter,
+  locales,
+  type Locale,
+} from "@/lib/i18n/routing";
 import { cn } from "@/lib/utils";
 
 export default function Header() {
@@ -12,137 +17,171 @@ export default function Header() {
   const locale = useLocale() as Locale;
   const pathname = usePathname();
   const router = useRouter();
+
   const [mobileOpen, setMobileOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
 
   const navItems = [
-    { label: t("buy"), href: "/properties?type=sale" },
-    { label: t("rent"), href: "/properties?type=rent" },
-    { label: t("offplan"), href: "/off-plan" },
+    { label: t("buy"), href: "/properties?listing=sale" },
+    { label: t("rent"), href: "/properties?listing=rent" },
     { label: t("services"), href: "/services" },
     { label: t("about"), href: "/about" },
-    { label: t("blog"), href: "/blog" },
     { label: t("contact"), href: "/contact" },
   ];
 
-  const switchLocale = (newLocale: Locale) => {
-    router.replace(pathname, { locale: newLocale });
+  const switchLocale = (nextLocale: Locale) => {
+    router.replace(pathname, { locale: nextLocale });
     setLangOpen(false);
+    setMobileOpen(false);
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 glass bg-navy/80 border-b border-brand-blue/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 lg:h-20">
-          {/* Logo */}
-          <Link href="/" className="flex-shrink-0">
-            <span className="font-display font-bold text-2xl text-brand-blue tracking-wide">
+    <>
+      <header
+        className={cn(
+          "fixed inset-x-0 top-0 z-50 h-20 transition-all duration-500",
+          scrolled
+            ? "border-b border-brand-blue/10 bg-[#060D1B]/75 backdrop-blur-[20px] backdrop-saturate-[180%]"
+            : "bg-transparent"
+        )}
+      >
+        <div className="mx-auto flex h-full w-full max-w-[1280px] items-center justify-between px-5 md:px-8">
+          <Link href="/" className="leading-none">
+            <span className="font-display text-[28px] font-semibold tracking-[4px] text-white">
               MULKEEF
+            </span>
+            <span className="mt-1 block text-[10px] uppercase tracking-[3px] text-gold">
+              Dubai
             </span>
           </Link>
 
-          {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center gap-1">
+          <nav className="hidden items-center gap-7 lg:flex">
             {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200",
-                  pathname === item.href
-                    ? "text-pearl bg-brand-blue/10"
-                    : "text-slate hover:text-pearl hover:bg-white/5"
-                )}
-              >
+              <Link key={item.href} href={item.href} className="nav-link">
                 {item.label}
               </Link>
             ))}
           </nav>
 
-          {/* Right side */}
-          <div className="flex items-center gap-3">
-            {/* Language Switcher */}
+          <div className="hidden items-center gap-4 lg:flex">
             <div className="relative">
               <button
-                onClick={() => setLangOpen(!langOpen)}
-                className="flex items-center gap-1.5 px-3 py-2 text-sm text-slate hover:text-pearl rounded-lg hover:bg-white/5 transition-colors"
+                type="button"
+                onClick={() => setLangOpen((open) => !open)}
+                className="text-xs uppercase tracking-[2px] text-slate transition-colors hover:text-pearl"
               >
-                <Globe className="w-4 h-4" />
-                <span className="hidden sm:inline">{localeFlags[locale]}</span>
-                <ChevronDown className={cn("w-3 h-3 transition-transform", langOpen && "rotate-180")} />
+                {`🌐 ${locale.toUpperCase()}`}
               </button>
-
-              {langOpen && (
-                <>
-                  <div className="fixed inset-0 z-40" onClick={() => setLangOpen(false)} />
-                  <div className="absolute right-0 mt-2 w-48 bg-navy-light border border-brand-blue/15 rounded-card shadow-2xl z-50 py-2 max-h-80 overflow-y-auto">
-                    {locales.map((loc) => (
-                      <button
-                        key={loc}
-                        onClick={() => switchLocale(loc)}
-                        className={cn(
-                          "w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors",
-                          loc === locale
-                            ? "text-brand-blue bg-brand-blue/10"
-                            : "text-slate hover:text-pearl hover:bg-white/5"
-                        )}
-                      >
-                        <span className="text-base">{localeFlags[loc]}</span>
-                        <span>{localeNames[loc]}</span>
-                      </button>
-                    ))}
-                  </div>
-                </>
-              )}
+              {langOpen ? (
+                <div className="absolute right-0 top-9 min-w-[120px] border border-brand-blue/10 bg-[#091327] p-2">
+                  {locales.map((loc) => (
+                    <button
+                      key={loc}
+                      type="button"
+                      onClick={() => switchLocale(loc)}
+                      className={cn(
+                        "block w-full px-2 py-1 text-left text-xs uppercase tracking-[2px] transition-colors",
+                        loc === locale
+                          ? "text-gold"
+                          : "text-slate hover:text-pearl"
+                      )}
+                    >
+                      {loc}
+                    </button>
+                  ))}
+                </div>
+              ) : null}
             </div>
 
-            {/* CTA */}
-            <Link href="/contact" className="hidden sm:inline-flex btn-primary text-sm !py-2 !px-4">
-              {t("contact")}
+            <Link href="/contact" className="btn-gold">
+              INQUIRE
             </Link>
-
-            {/* Mobile toggle */}
-            <button
-              onClick={() => setMobileOpen(!mobileOpen)}
-              className="lg:hidden p-2 text-slate hover:text-pearl"
-            >
-              {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
           </div>
-        </div>
-      </div>
 
-      {/* Mobile Menu */}
-      {mobileOpen && (
-        <div className="lg:hidden bg-navy-light border-t border-brand-blue/10">
-          <div className="px-4 py-4 space-y-1">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setMobileOpen(false)}
-                className={cn(
-                  "block px-4 py-3 text-base font-medium rounded-lg transition-colors",
-                  pathname === item.href
-                    ? "text-pearl bg-brand-blue/10"
-                    : "text-slate hover:text-pearl hover:bg-white/5"
-                )}
+          <button
+            type="button"
+            onClick={() => setMobileOpen((open) => !open)}
+            className="inline-flex h-10 w-10 items-center justify-center text-pearl lg:hidden"
+            aria-label="Menu"
+          >
+            {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+        </div>
+      </header>
+
+      {mobileOpen ? (
+        <div className="fixed inset-0 z-40 bg-[#060D1B]/95 lg:hidden">
+          <div className="mx-auto flex h-full max-w-[1280px] flex-col px-6 pb-10 pt-24">
+            <div className="mb-8 flex items-center justify-between">
+              <span className="text-xs uppercase tracking-[3px] text-slate">
+                Navigation
+              </span>
+              <button
+                type="button"
+                onClick={() => setLangOpen((open) => !open)}
+                className="text-xs uppercase tracking-[2px] text-slate hover:text-pearl"
               >
-                {item.label}
-              </Link>
-            ))}
-            <div className="pt-3">
-              <Link
-                href="/contact"
-                onClick={() => setMobileOpen(false)}
-                className="block w-full text-center btn-primary"
-              >
-                {t("contact")}
-              </Link>
+                {`🌐 ${locale.toUpperCase()}`}
+              </button>
             </div>
+
+            {langOpen ? (
+              <div className="mb-8 flex flex-wrap gap-3">
+                {locales.map((loc) => (
+                  <button
+                    key={loc}
+                    type="button"
+                    onClick={() => switchLocale(loc)}
+                    className={cn(
+                      "border border-brand-blue/20 px-3 py-2 text-xs uppercase tracking-[2px]",
+                      loc === locale ? "text-gold" : "text-slate"
+                    )}
+                  >
+                    {loc}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+
+            <div className="flex flex-1 flex-col justify-center gap-5">
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileOpen(false)}
+                  className="font-display text-4xl leading-none text-pearl"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+
+            <Link
+              href="/contact"
+              onClick={() => setMobileOpen(false)}
+              className="btn-gold mt-8 w-full text-center"
+            >
+              INQUIRE
+            </Link>
           </div>
         </div>
-      )}
-    </header>
+      ) : null}
+    </>
   );
 }
