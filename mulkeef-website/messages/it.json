@@ -1,0 +1,88 @@
+{
+  "nav": {
+    "buy": "Buy",
+    "rent": "Rent",
+    "offplan": "Off-Plan",
+    "services": "Services",
+    "about": "About",
+    "blog": "Insights",
+    "contact": "Contact"
+  },
+  "hero": {
+    "label": "Dubai Real Estate",
+    "title": "Find Your Dream Property in Dubai",
+    "subtitle": "Trusted expertise for buying, renting, and investing in Dubai's most prestigious communities.",
+    "searchPlaceholder": "Search by community, project, or type...",
+    "searchBtn": "Search"
+  },
+  "featured": {
+    "label": "Featured Properties",
+    "title": "Handpicked for You",
+    "viewAll": "View All Properties"
+  },
+  "services": {
+    "label": "Our Services",
+    "title": "Comprehensive Real Estate Solutions",
+    "buy": {
+      "title": "Buy Property",
+      "desc": "Find your ideal home or investment property in Dubai's most sought-after communities."
+    },
+    "rent": {
+      "title": "Rent Property",
+      "desc": "Discover rental properties that match your lifestyle, from studios to luxury villas."
+    },
+    "offplan": {
+      "title": "Off-Plan Investment",
+      "desc": "Access exclusive off-plan projects with attractive payment plans and high ROI potential."
+    },
+    "management": {
+      "title": "Property Management",
+      "desc": "Full-service property management including maintenance, tenant relations, and inspections."
+    }
+  },
+  "stats": {
+    "properties": "Properties Sold",
+    "clients": "Happy Clients",
+    "experience": "Years Experience",
+    "communities": "Communities Covered"
+  },
+  "cta": {
+    "title": "Ready to Start Your Property Journey?",
+    "subtitle": "Get expert guidance from our RERA-certified agents. Free consultation, no obligation.",
+    "btn": "Book a Free Consultation",
+    "whatsapp": "Chat on WhatsApp"
+  },
+  "footer": {
+    "tagline": "Your trusted partner for real estate in Dubai.",
+    "quickLinks": "Quick Links",
+    "contactUs": "Contact Us",
+    "followUs": "Follow Us",
+    "rights": "All rights reserved.",
+    "rera": "RERA Licensed Brokerage"
+  },
+  "property": {
+    "bedrooms": "Bedrooms",
+    "bathrooms": "Bathrooms",
+    "area": "Area",
+    "price": "Price",
+    "available": "Available",
+    "sold": "Sold",
+    "rented": "Rented",
+    "forSale": "For Sale",
+    "forRent": "For Rent",
+    "inquire": "Inquire Now",
+    "viewDetails": "View Details",
+    "similar": "Similar Properties",
+    "ref": "Ref"
+  },
+  "contact": {
+    "title": "Get in Touch",
+    "name": "Full Name",
+    "email": "Email Address",
+    "phone": "Phone Number",
+    "message": "Message",
+    "intent": "I'm interested in...",
+    "send": "Send Message",
+    "success": "Message sent successfully! We'll be in touch shortly."
+  }
+}

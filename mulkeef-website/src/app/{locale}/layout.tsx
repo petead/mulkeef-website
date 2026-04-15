@@ -1,0 +1,37 @@
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages } from "next-intl/server";
+import { notFound } from "next/navigation";
+import { routing } from "@/lib/i18n/routing";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+export default async function LocaleLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: { locale: string };
+}) {
+  const { locale } = await params;
+
+  if (!routing.locales.includes(locale as any)) {
+    notFound();
+  }
+
+  const messages = await getMessages();
+  const isRTL = locale === "ar";
+
+  return (
+    <div dir={isRTL ? "rtl" : "ltr"} lang={locale}>
+      <NextIntlClientProvider messages={messages}>
+        <Header />
+        <main className="min-h-screen">{children}</main>
+        <Footer />
+      </NextIntlClientProvider>
+    </div>
+  );
+}

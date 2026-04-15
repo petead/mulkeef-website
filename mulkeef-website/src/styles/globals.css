@@ -1,0 +1,136 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --brand-blue: #1E4FD8;
+    --navy: #0A1628;
+    --navy-light: #111D33;
+    --gold: #D4A853;
+    --emerald: #34D399;
+    --coral: #F87171;
+    --pearl: #F8FAFC;
+    --slate: #94A3B8;
+    --ice: #DBEAFE;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-navy text-pearl;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--navy);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--brand-blue);
+    border-radius: 3px;
+  }
+
+  /* Selection */
+  ::selection {
+    background: rgba(30, 79, 216, 0.3);
+    color: var(--pearl);
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-brand-blue text-white font-body font-bold
+           px-6 py-3 rounded-btn
+           hover:bg-brand-blue-light
+           transition-all duration-200
+           active:scale-[0.98];
+  }
+
+  .btn-gold {
+    @apply bg-gold text-navy font-body font-bold
+           px-6 py-3 rounded-btn
+           hover:bg-gold-light
+           transition-all duration-200
+           active:scale-[0.98];
+  }
+
+  .btn-outline {
+    @apply border border-brand-blue/30 text-pearl font-body font-semibold
+           px-6 py-3 rounded-btn
+           hover:bg-brand-blue/10 hover:border-brand-blue/50
+           transition-all duration-200;
+  }
+
+  .card {
+    @apply bg-navy-light border border-brand-blue/[0.08]
+           rounded-card overflow-hidden
+           transition-all duration-300
+           hover:border-brand-blue/20;
+  }
+
+  .section-label {
+    @apply text-gold font-body font-bold text-xs
+           tracking-[3px] uppercase;
+  }
+
+  .section-title {
+    @apply font-display font-bold text-3xl md:text-4xl
+           text-pearl leading-tight;
+  }
+
+  .input-field {
+    @apply bg-navy-light border border-brand-blue/15
+           rounded-btn px-4 py-3 text-pearl font-body text-sm
+           placeholder:text-slate-dark
+           focus:outline-none focus:border-brand-blue/40
+           transition-colors duration-200;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5
+           rounded-md text-xs font-body font-semibold;
+  }
+
+  .badge-available {
+    @apply badge bg-emerald/15 text-emerald;
+  }
+
+  .badge-sold {
+    @apply badge bg-coral/15 text-coral;
+  }
+
+  .badge-featured {
+    @apply badge bg-gold/15 text-gold;
+  }
+
+  /* Animate on scroll */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-brand-blue to-gold
+           bg-clip-text text-transparent;
+  }
+
+  .glass {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+}
