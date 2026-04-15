@@ -4,36 +4,37 @@
     "rent": "Louer",
     "offplan": "Off-Plan",
     "services": "Services",
-    "about": "A propos",
+    "about": "À propos",
     "blog": "Blog",
     "contact": "Contact"
   },
   "hero": {
     "label": "Immobilier Dubai",
-    "title": "Trouvez votre bien d'exception a Dubai",
+    "titleBefore": "Trouvez votre ",
+    "titleHighlight": "bien d'exception à Dubai",
     "subtitle": "Expertise de confiance pour acheter, louer et investir dans les quartiers les plus prestigieux de Dubai.",
     "searchPlaceholder": "Rechercher par quartier, projet ou type...",
     "searchBtn": "Rechercher"
   },
   "featured": {
     "label": "Biens en vedette",
-    "title": "Selectionnes pour vous",
+    "title": "Sélectionnés pour vous",
     "viewAll": "Voir tous les biens"
   },
   "services": {
     "label": "Nos Services",
-    "title": "Solutions immobilieres completes",
+    "title": "Solutions immobilières complètes",
     "buy": {
       "title": "Achat immobilier",
-      "desc": "Trouvez votre maison ideale ou votre investissement dans les communautes les plus prisees de Dubai."
+      "desc": "Trouvez votre maison idéale ou votre investissement dans les communautés les plus prisées de Dubai."
     },
     "rent": {
       "title": "Location",
-      "desc": "Decouvrez des biens en location adaptes a votre style de vie, du studio a la villa de luxe."
+      "desc": "Découvrez des biens en location adaptés à votre style de vie, du studio à la villa de luxe."
     },
     "offplan": {
       "title": "Investissement Off-Plan",
-      "desc": "Acces exclusif aux projets sur plan avec des plans de paiement attractifs et un fort potentiel de ROI."
+      "desc": "Accès exclusif aux projets sur plan avec des plans de paiement attractifs et un fort potentiel de ROI."
     },
     "management": {
       "title": "Gestion locative",
@@ -43,21 +44,21 @@
   "stats": {
     "properties": "Biens vendus",
     "clients": "Clients satisfaits",
-    "experience": "Ans d'experience",
+    "experience": "Ans d'expérience",
     "communities": "Quartiers couverts"
   },
   "cta": {
-    "title": "Pret a demarrer votre projet immobilier ?",
-    "subtitle": "Beneficiez de l'expertise de nos agents certifies RERA. Consultation gratuite, sans engagement.",
+    "title": "Prêt à démarrer votre projet immobilier ?",
+    "subtitle": "Bénéficiez de l'expertise de nos agents certifiés RERA. Consultation gratuite, sans engagement.",
     "btn": "Prendre rendez-vous",
     "whatsapp": "Discuter sur WhatsApp"
   },
   "footer": {
-    "tagline": "Votre partenaire de confiance pour l'immobilier a Dubai.",
+    "tagline": "Votre partenaire de confiance pour l'immobilier à Dubai.",
     "quickLinks": "Liens rapides",
     "contactUs": "Nous contacter",
     "followUs": "Suivez-nous",
-    "rights": "Tous droits reserves.",
+    "rights": "Tous droits réservés.",
     "rera": "Courtage sous licence RERA"
   },
   "property": {
@@ -67,11 +68,11 @@
     "price": "Prix",
     "available": "Disponible",
     "sold": "Vendu",
-    "rented": "Loue",
-    "forSale": "A vendre",
-    "forRent": "A louer",
+    "rented": "Loué",
+    "forSale": "À vendre",
+    "forRent": "À louer",
     "inquire": "Demander des infos",
-    "viewDetails": "Voir le detail",
+    "viewDetails": "Voir le détail",
     "similar": "Biens similaires",
     "ref": "Ref"
   },
@@ -79,10 +80,10 @@
     "title": "Contactez-nous",
     "name": "Nom complet",
     "email": "Adresse email",
-    "phone": "Telephone",
+    "phone": "Téléphone",
     "message": "Message",
-    "intent": "Je suis interesse par...",
+    "intent": "Je suis intéressé par...",
     "send": "Envoyer",
-    "success": "Message envoye avec succes ! Nous vous recontactons rapidement."
+    "success": "Message envoyé avec succès ! Nous vous recontactons rapidement."
   }
 }

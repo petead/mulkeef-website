@@ -10,7 +10,8 @@
   },
   "hero": {
     "label": "Dubai Real Estate",
-    "title": "Find Your Dream Property in Dubai",
+    "titleBefore": "Find Your Dream ",
+    "titleHighlight": "Property in Dubai",
     "subtitle": "Trusted expertise for buying, renting, and investing in Dubai's most prestigious communities.",
     "searchPlaceholder": "Search by community, project, or type...",
     "searchBtn": "Search"
