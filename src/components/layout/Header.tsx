@@ -40,6 +40,7 @@ export default function Header() {
   const navItems = [
     { label: t("buy"), href: "/properties?listing=sale" },
     { label: t("rent"), href: "/properties?listing=rent" },
+    { label: t("offplan"), href: "/off-plan" },
     { label: t("services"), href: "/services" },
     { label: t("about"), href: "/about" },
     { label: t("contact"), href: "/contact" },
