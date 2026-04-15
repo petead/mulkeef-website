@@ -8,7 +8,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import {
   Search,
@@ -21,15 +21,11 @@ import {
   ArrowRight,
   X,
   Heart,
-  Building2,
+  SearchX,
 } from "lucide-react";
-import { Link, usePathname, useRouter } from "@/lib/i18n/routing";
+import { Link } from "@/lib/i18n/routing";
 import { cn, formatArea } from "@/lib/utils";
-import {
-  getProperties,
-  getAreaGuideOptions,
-  type PropertyWithDetails,
-} from "@/lib/supabase";
+import { getSupabase, getAreaGuideOptions } from "@/lib/supabase";
 
 const PROPERTY_TYPES = [
   "apartment",
@@ -88,10 +84,7 @@ const RENT_PRESET_IDS = [
   "r_gt150k",
 ] as const;
 
-const PRICE_RANGE_BY_ID: Record<
-  string,
-  { min: number; max?: number }
-> = {
+const PRICE_RANGE_BY_ID: Record<string, { min: number; max?: number }> = {
   s_lt1m: { min: 0, max: 999_999 },
   s_1m_3m: { min: 1_000_000, max: 3_000_000 },
   s_3m_5m: { min: 3_000_000, max: 5_000_000 },
@@ -103,21 +96,26 @@ const PRICE_RANGE_BY_ID: Record<
   r_gt150k: { min: 150_000 },
 };
 
-function mapServerProperty(p: PropertyWithDetails): CardProperty {
+function mapSupabaseRow(p: Record<string, unknown>): CardProperty {
+  const trRaw = p.translation;
+  const tr = Array.isArray(trRaw) ? (trRaw[0] as Record<string, string> | undefined) : (trRaw as Record<string, string> | undefined);
+  const imgsRaw = (p.images as { url: string; is_cover: boolean; position: number }[]) || [];
+  const images = [...imgsRaw].sort((a, b) => a.position - b.position);
+
   return {
-    id: p.id,
-    title: p.translation.title,
-    neighborhood: p.translation.neighborhood || "",
-    slug: p.translation.slug_localized,
+    id: String(p.id),
+    title: (tr?.title as string) || String(p.slug),
+    neighborhood: (tr?.neighborhood as string) || "",
+    slug: (tr?.slug_localized as string) || String(p.slug),
     price: Number(p.price),
-    bedrooms: p.bedrooms ?? 0,
-    bathrooms: p.bathrooms ?? 0,
+    bedrooms: (p.bedrooms as number) ?? 0,
+    bathrooms: (p.bathrooms as number) ?? 0,
     area: Number(p.area_sqft) || 0,
-    listing_type: p.listing_type,
-    property_type: p.property_type,
-    featured: p.featured,
-    reference_number: p.reference_number || "",
-    images: (p.images || []).map((im) => ({
+    listing_type: p.listing_type as "sale" | "rent",
+    property_type: String(p.property_type),
+    featured: Boolean(p.featured),
+    reference_number: String(p.reference_number || ""),
+    images: images.map((im) => ({
       url: im.url,
       is_cover: im.is_cover,
       position: im.position,
@@ -147,6 +145,18 @@ function useDebouncedValue<T>(value: T, delay: number): T {
   return debounced;
 }
 
+function PropertyCardSkeleton() {
+  return (
+    <div className="overflow-hidden rounded-card bg-navy-light animate-pulse">
+      <div className="h-52 w-full bg-navy-medium/50" />
+      <div className="h-24 p-5">
+        <div className="mb-2 h-4 w-3/4 rounded bg-navy-medium/60" />
+        <div className="h-3 w-1/2 rounded bg-navy-medium/40" />
+      </div>
+    </div>
+  );
+}
+
 function PropertiesPageInner() {
   const t = useTranslations();
   const tp = useTranslations("propertiesPage");
@@ -155,7 +165,7 @@ function PropertiesPageInner() {
   const pathname = usePathname();
   const sp = useSearchParams();
 
-  const [rows, setRows] = useState<CardProperty[]>([]);
+  const [properties, setProperties] = useState<CardProperty[]>(DEMO);
   const [loading, setLoading] = useState(true);
   const [areaOptions, setAreaOptions] = useState<{ slug: string; name: string }[]>(
     []
@@ -186,7 +196,8 @@ function PropertiesPageInner() {
         else p.set(k, v);
       }
       const qs = p.toString();
-      router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+      const href = qs ? `${pathname}?${qs}` : pathname;
+      router.replace(href, { scroll: false });
     },
     [pathname, router, sp]
   );
@@ -199,31 +210,59 @@ function PropertiesPageInner() {
       return;
     }
     setSearchInput(sp.get("q") || "");
-  }, [sp.toString()]);
+  }, [sp]);
 
   useEffect(() => {
     const qUrl = sp.get("q") || "";
     if (debouncedQ.trim() === (qUrl || "").trim()) return;
     replaceQuery({ q: debouncedQ.trim() || undefined });
-  }, [debouncedQ, replaceQuery, sp.toString()]);
+  }, [debouncedQ, replaceQuery, sp]);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function fetchProperties() {
+      setLoading(true);
+      try {
+        const supabase = getSupabase();
+        const { data, error } = await supabase
+          .from("properties")
+          .select(
+            "*, translation:property_translations!inner(*), images:property_images(*)"
+          )
+          .eq("property_translations.locale", locale)
+          .eq("status", "available")
+          .not("published_at", "is", null)
+          .order("featured", { ascending: false });
+
+        if (error) throw error;
+
+        if (!cancelled && data && data.length > 0) {
+          setProperties(
+            data.map((row) => mapSupabaseRow(row as Record<string, unknown>))
+          );
+        } else if (!cancelled) {
+          setProperties(DEMO);
+        }
+      } catch (e) {
+        console.error(e);
+        if (!cancelled) setProperties(DEMO);
+      }
+      if (!cancelled) setLoading(false);
+    }
+    fetchProperties();
+    return () => {
+      cancelled = true;
+    };
+  }, [locale, listingType]);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      setLoading(true);
       try {
-        const [data, areas] = await Promise.all([
-          getProperties(locale),
-          getAreaGuideOptions(locale),
-        ]);
-        if (cancelled) return;
-        setAreaOptions(areas);
-        const mapped = (data || []).map(mapServerProperty);
-        setRows(mapped.length ? mapped : DEMO);
+        const areas = await getAreaGuideOptions(locale);
+        if (!cancelled) setAreaOptions(areas);
       } catch {
-        if (!cancelled) setRows(DEMO);
-      } finally {
-        if (!cancelled) setLoading(false);
+        if (!cancelled) setAreaOptions([]);
       }
     })();
     return () => {
@@ -237,7 +276,7 @@ function PropertiesPageInner() {
   }, [areaSlug, areaOptions]);
 
   const filtered = useMemo(() => {
-    let list = rows.filter((p) => p.listing_type === listingType);
+    let list = properties.filter((p) => p.listing_type === listingType);
 
     if (ptype) list = list.filter((p) => p.property_type === ptype);
 
@@ -275,15 +314,7 @@ function PropertiesPageInner() {
     }
 
     return list;
-  }, [
-    rows,
-    listingType,
-    ptype,
-    bedrooms,
-    pr,
-    activeAreaName,
-    sp,
-  ]);
+  }, [properties, listingType, ptype, bedrooms, pr, activeAreaName, sp]);
 
   const setListingType = (next: "sale" | "rent") => {
     replaceQuery({
@@ -292,7 +323,11 @@ function PropertiesPageInner() {
     });
   };
 
-  const togglePricePreset = (id: string) => {
+  const togglePricePreset = (id: string | null) => {
+    if (id === null) {
+      replaceQuery({ pr: undefined });
+      return;
+    }
     const valid =
       listingType === "sale"
         ? SALE_PRESET_IDS.includes(id as (typeof SALE_PRESET_IDS)[number])
@@ -333,152 +368,163 @@ function PropertiesPageInner() {
   function renderFiltersContent() {
     return (
       <div className="space-y-6">
-      <div className="flex items-center justify-between md:hidden">
-        <h3 className="font-body text-sm font-bold text-pearl">
-          {tp("filtersTitle")}
-        </h3>
-        <button
-          type="button"
-          onClick={() => setFiltersOpen(false)}
-          className="rounded-lg p-2 text-slate hover:bg-brand-blue/10 hover:text-pearl"
-          aria-label={tp("closeFilters")}
-        >
-          <X className="h-5 w-5" />
-        </button>
-      </div>
+        <div className="flex items-center justify-between md:hidden">
+          <h3 className="font-body text-sm font-bold text-pearl">
+            {tp("filtersTitle")}
+          </h3>
+          <button
+            type="button"
+            onClick={() => setFiltersOpen(false)}
+            className="min-h-[44px] min-w-[44px] rounded-lg p-2 text-slate hover:bg-brand-blue/10 hover:text-pearl"
+            aria-label={tp("closeFilters")}
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
 
-      <div className="hidden items-center justify-between md:flex">
-        <h3 className="font-body text-sm font-bold text-pearl">
-          {tp("filtersTitle")}
-        </h3>
-        <button
-          type="button"
-          onClick={clearPanelFilters}
-          className="text-xs font-semibold text-brand-blue-light hover:underline"
-        >
-          {tp("clearAll")}
-        </button>
-      </div>
+        <div className="hidden items-center justify-between md:flex">
+          <h3 className="font-body text-sm font-bold text-pearl">
+            {tp("filtersTitle")}
+          </h3>
+          <button
+            type="button"
+            onClick={clearPanelFilters}
+            className="text-xs font-semibold text-brand-blue-light hover:underline"
+          >
+            {tp("clearAll")}
+          </button>
+        </div>
 
-      <div className="md:hidden">
-        <button
-          type="button"
-          onClick={clearPanelFilters}
-          className="text-xs font-semibold text-brand-blue-light hover:underline"
-        >
-          {tp("clearAll")}
-        </button>
-      </div>
+        <div className="md:hidden">
+          <button
+            type="button"
+            onClick={clearPanelFilters}
+            className="min-h-[44px] py-2 text-xs font-semibold text-brand-blue-light hover:underline"
+          >
+            {tp("clearAll")}
+          </button>
+        </div>
 
-      <div>
-        <p className="mb-2 block text-xs font-semibold uppercase tracking-wider text-slate">
-          {tp("priceLabel")}
-        </p>
-        <div className="flex flex-wrap gap-2">
-          {(listingType === "sale" ? SALE_PRESET_IDS : RENT_PRESET_IDS).map(
-            (id) => (
+        <div>
+          <p className="mb-2 block text-xs font-semibold uppercase tracking-wider text-slate">
+            {tp("typeLabel")}
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {PROPERTY_TYPES.map((type) => (
               <button
-                key={id}
+                key={type}
                 type="button"
-                onClick={() => togglePricePreset(id)}
+                onClick={() =>
+                  replaceQuery({ ptype: ptype === type ? undefined : type })
+                }
                 className={cn(
-                  "rounded-lg border px-3 py-1.5 text-xs font-semibold transition-all",
-                  pr === id
+                  "min-h-[40px] rounded-lg border px-3 py-2 text-xs font-semibold capitalize transition-all",
+                  ptype === type
                     ? "border-brand-blue bg-brand-blue/15 text-brand-blue-light"
                     : "border-brand-blue/15 text-slate hover:border-brand-blue/30 hover:text-pearl"
                 )}
               >
-                {listingType === "sale"
-                  ? salePresetLabels[id as (typeof SALE_PRESET_IDS)[number]]
-                  : rentPresetLabels[id as (typeof RENT_PRESET_IDS)[number]]}
+                {type}
               </button>
-            )
-          )}
+            ))}
+          </div>
         </div>
-      </div>
 
-      <div>
-        <p className="mb-2 block text-xs font-semibold uppercase tracking-wider text-slate">
-          {tp("areaLabel")}
-        </p>
-        <select
-          aria-label={tp("areaLabel")}
-          value={areaSlug}
-          onChange={(e) =>
-            replaceQuery({ area: e.target.value || undefined })
-          }
-          className="input-field w-full max-w-md"
+        <div>
+          <p className="mb-2 block text-xs font-semibold uppercase tracking-wider text-slate">
+            {tp("priceLabel")}
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => togglePricePreset(null)}
+              className={cn(
+                "min-h-[40px] rounded-lg border px-3 py-2 text-xs font-semibold transition-all",
+                !pr
+                  ? "border-brand-blue bg-brand-blue/15 text-brand-blue-light"
+                  : "border-brand-blue/15 text-slate hover:border-brand-blue/30 hover:text-pearl"
+              )}
+            >
+              {tp("priceAny")}
+            </button>
+            {(listingType === "sale" ? SALE_PRESET_IDS : RENT_PRESET_IDS).map(
+              (id) => (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => togglePricePreset(id)}
+                  className={cn(
+                    "min-h-[40px] rounded-lg border px-3 py-2 text-xs font-semibold transition-all",
+                    pr === id
+                      ? "border-brand-blue bg-brand-blue/15 text-brand-blue-light"
+                      : "border-brand-blue/15 text-slate hover:border-brand-blue/30 hover:text-pearl"
+                  )}
+                >
+                  {listingType === "sale"
+                    ? salePresetLabels[id as (typeof SALE_PRESET_IDS)[number]]
+                    : rentPresetLabels[id as (typeof RENT_PRESET_IDS)[number]]}
+                </button>
+              )
+            )}
+          </div>
+        </div>
+
+        <div>
+          <p className="mb-2 block text-xs font-semibold uppercase tracking-wider text-slate">
+            {tp("areaLabel")}
+          </p>
+          <select
+            aria-label={tp("areaLabel")}
+            value={areaSlug}
+            onChange={(e) =>
+              replaceQuery({ area: e.target.value || undefined })
+            }
+            className="input-field min-h-[44px] w-full max-w-md py-3"
+          >
+            <option value="">{tp("areaAll")}</option>
+            {areaOptions.map((a) => (
+              <option key={a.slug} value={a.slug}>
+                {a.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <p className="mb-2 block text-xs font-semibold uppercase tracking-wider text-slate">
+            {t("property.bedrooms")}
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {BEDROOM_OPTIONS.map((num) => (
+              <button
+                key={num}
+                type="button"
+                onClick={() =>
+                  replaceQuery({
+                    beds: bedrooms === num ? undefined : String(num),
+                  })
+                }
+                className={cn(
+                  "flex h-11 w-11 items-center justify-center rounded-lg border text-sm font-semibold transition-all md:h-10 md:w-10",
+                  bedrooms === num
+                    ? "border-brand-blue bg-brand-blue/15 text-brand-blue-light"
+                    : "border-brand-blue/15 text-slate hover:border-brand-blue/30 hover:text-pearl"
+                )}
+              >
+                {num === 0 ? "S" : num}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <button
+          type="button"
+          className="btn-primary min-h-[48px] w-full md:hidden"
+          onClick={() => setFiltersOpen(false)}
         >
-          <option value="">{tp("areaAll")}</option>
-          {areaOptions.map((a) => (
-            <option key={a.slug} value={a.slug}>
-              {a.name}
-            </option>
-          ))}
-        </select>
+          {tp("apply")}
+        </button>
       </div>
-
-      <div>
-        <p className="mb-2 block text-xs font-semibold uppercase tracking-wider text-slate">
-          {tp("typeLabel")}
-        </p>
-        <div className="flex flex-wrap gap-2">
-          {PROPERTY_TYPES.map((type) => (
-            <button
-              key={type}
-              type="button"
-              onClick={() =>
-                replaceQuery({ ptype: ptype === type ? undefined : type })
-              }
-              className={cn(
-                "rounded-lg border px-3 py-1.5 text-xs font-semibold capitalize transition-all",
-                ptype === type
-                  ? "border-brand-blue bg-brand-blue/15 text-brand-blue-light"
-                  : "border-brand-blue/15 text-slate hover:border-brand-blue/30 hover:text-pearl"
-              )}
-            >
-              {type}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div>
-        <p className="mb-2 block text-xs font-semibold uppercase tracking-wider text-slate">
-          {t("property.bedrooms")}
-        </p>
-        <div className="flex flex-wrap gap-2">
-          {BEDROOM_OPTIONS.map((num) => (
-            <button
-              key={num}
-              type="button"
-              onClick={() =>
-                replaceQuery({
-                  beds:
-                    bedrooms === num ? undefined : String(num),
-                })
-              }
-              className={cn(
-                "flex h-10 w-10 items-center justify-center rounded-lg border text-sm font-semibold transition-all",
-                bedrooms === num
-                  ? "border-brand-blue bg-brand-blue/15 text-brand-blue-light"
-                  : "border-brand-blue/15 text-slate hover:border-brand-blue/30 hover:text-pearl"
-              )}
-            >
-              {num === 0 ? "S" : num}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <button
-        type="button"
-        className="btn-primary w-full md:hidden"
-        onClick={() => setFiltersOpen(false)}
-      >
-        {tp("apply")}
-      </button>
-    </div>
     );
   }
 
@@ -506,7 +552,7 @@ function PropertiesPageInner() {
                 type="button"
                 onClick={() => setListingType(type)}
                 className={cn(
-                  "rounded-lg px-5 py-2 text-sm font-semibold transition-all",
+                  "min-h-[44px] flex-1 rounded-lg px-5 py-2 text-sm font-semibold transition-all sm:min-h-0 sm:flex-none",
                   listingType === type
                     ? "bg-brand-blue text-white"
                     : "text-slate hover:text-pearl"
@@ -527,7 +573,7 @@ function PropertiesPageInner() {
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder={t("hero.searchPlaceholder")}
-              className="input-field w-full pl-10"
+              className="input-field min-h-[48px] w-full pl-10 sm:min-h-0"
             />
           </div>
 
@@ -535,7 +581,7 @@ function PropertiesPageInner() {
             type="button"
             onClick={() => setFiltersOpen((o) => !o)}
             className={cn(
-              "btn-outline flex !py-2 items-center justify-center gap-2",
+              "btn-outline flex min-h-[48px] !py-2 items-center justify-center gap-2 sm:min-h-0",
               filtersOpen && "!border-brand-blue/40 !bg-brand-blue/10"
             )}
           >
@@ -580,7 +626,7 @@ function PropertiesPageInner() {
               aria-hidden
               onClick={() => setFiltersOpen(false)}
             />
-            <div className="fixed inset-x-0 bottom-0 z-50 max-h-[88vh] overflow-y-auto rounded-t-2xl border border-brand-blue/15 border-b-0 bg-navy-light p-6 shadow-2xl shadow-brand-blue/10 md:hidden">
+            <div className="fixed inset-x-0 bottom-0 z-50 max-h-[88vh] overflow-y-auto rounded-t-2xl border border-brand-blue/15 border-b-0 bg-navy-light px-5 py-7 pb-10 shadow-2xl shadow-brand-blue/10 md:hidden">
               {renderFiltersContent()}
             </div>
             <div className="card mb-8 hidden animate-fade-in p-6 md:block">
@@ -596,122 +642,137 @@ function PropertiesPageInner() {
               : "flex flex-col gap-4"
           )}
         >
-          {filtered.map((prop) => {
-            const cover = coverImageUrl(prop.images);
-            return (
-              <article
-                key={prop.id}
-                className={cn(
-                  "card group relative cursor-pointer overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-brand-blue/25 hover:shadow-lg",
-                  viewMode === "list" && "flex flex-col sm:flex-row"
-                )}
-              >
-                <div
-                  className={cn(
-                    "relative shrink-0 overflow-hidden bg-gradient-to-br from-brand-blue/15 to-gold/5",
-                    viewMode === "grid"
-                      ? "h-52"
-                      : "h-52 w-full sm:h-auto sm:min-h-[220px] sm:w-56 md:w-64"
-                  )}
-                >
-                  {cover ? (
-                    // eslint-disable-next-line @next/next/no-img-element -- remote Supabase / CDN URLs
-                    <img
-                      src={cover}
-                      alt=""
-                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-                    />
-                  ) : null}
-                  <div
+          {loading
+            ? Array.from({ length: 6 }).map((_, i) => (
+                <PropertyCardSkeleton key={i} />
+              ))
+            : filtered.map((prop) => {
+                const cover = coverImageUrl(prop.images);
+                return (
+                  <article
+                    key={prop.id}
                     className={cn(
-                      "absolute inset-0 bg-gradient-to-br from-brand-blue/20 to-gold/10 transition-opacity duration-500",
-                      cover ? "opacity-40 group-hover:opacity-55" : "opacity-100"
+                      "card group relative cursor-pointer overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-brand-blue/25 hover:shadow-lg hover:shadow-navy/50",
+                      viewMode === "list" && "flex flex-col sm:flex-row"
                     )}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/40 to-transparent opacity-90 transition-opacity duration-500 group-hover:opacity-100" />
-
-                  <div className="absolute top-3 left-3 flex gap-2">
-                    {prop.featured && (
-                      <span className="badge-featured">{t("property.featured")}</span>
-                    )}
-                  </div>
-                  <span className="badge-available absolute top-3 right-3">
-                    {t("property.available")}
-                  </span>
-
-                  <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy via-navy/80 to-transparent pb-3 pl-4 pr-4 pt-12">
-                    <span className="font-mono text-lg font-semibold text-gold drop-shadow-md">
-                      {compactPrice(prop.price)} AED
-                      {prop.listing_type === "rent"
-                        ? t("property.perYear")
-                        : ""}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex flex-1 flex-col p-5">
-                  <Link
-                    href={`/properties/${prop.slug}`}
-                    className="block min-w-0 flex-1"
                   >
-                    <h3 className="mb-1 font-display text-lg font-bold text-pearl transition-colors group-hover:text-brand-blue-light">
-                      {prop.title}
-                    </h3>
-                    <p className="mb-4 text-sm text-slate">{prop.neighborhood}</p>
-
-                    <div className="mb-4 flex flex-wrap items-center gap-4 text-xs text-slate">
-                      {prop.bedrooms > 0 && (
-                        <span className="flex items-center gap-1">
-                          <Bed className="h-3.5 w-3.5" /> {prop.bedrooms}
-                        </span>
+                    <div
+                      className={cn(
+                        "relative shrink-0 overflow-hidden bg-gradient-to-br from-brand-blue/15 to-gold/5",
+                        viewMode === "grid"
+                          ? "h-52"
+                          : "h-52 w-full sm:h-auto sm:min-h-[220px] sm:w-56 md:w-64"
                       )}
-                      <span className="flex items-center gap-1">
-                        <Bath className="h-3.5 w-3.5" /> {prop.bathrooms}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Maximize className="h-3.5 w-3.5" />{" "}
-                        {formatArea(prop.area)}
-                      </span>
-                    </div>
-
-                    <div className="mb-4 flex items-center justify-between text-brand-blue">
-                      <span className="inline-flex items-center gap-1 text-sm font-semibold transition-all group-hover:gap-2">
-                        {t("property.viewDetails")}
-                        <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
-                      </span>
-                    </div>
-                  </Link>
-
-                  <div className="mt-auto flex items-center justify-between border-t border-brand-blue/10 pt-3">
-                    <span className="font-mono text-xs text-slate-dark">
-                      {t("property.ref")} {prop.reference_number || "—"}
-                    </span>
-                    <button
-                      type="button"
-                      className="flex h-9 w-9 items-center justify-center rounded-full border border-brand-blue/20 text-pearl transition-colors hover:border-gold/40 hover:text-gold"
-                      aria-label={tp("saveProperty")}
-                      onClick={(e) => e.preventDefault()}
                     >
-                      <Heart className="h-4 w-4" strokeWidth={1.75} />
-                    </button>
-                  </div>
-                </div>
-              </article>
-            );
-          })}
+                      {cover ? (
+                        // eslint-disable-next-line @next/next/no-img-element -- remote Supabase / CDN URLs
+                        <img
+                          src={cover}
+                          alt=""
+                          className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                        />
+                      ) : null}
+                      <div
+                        className={cn(
+                          "absolute inset-0 bg-gradient-to-br from-brand-blue/20 to-gold/10 transition-opacity duration-500",
+                          cover ? "opacity-40 group-hover:opacity-55" : "opacity-100"
+                        )}
+                      />
+
+                      <div className="absolute top-3 left-3 z-10 flex gap-2">
+                        {prop.featured && (
+                          <span className="badge-featured">
+                            {t("property.featured")}
+                          </span>
+                        )}
+                      </div>
+                      <span className="badge-available absolute top-3 right-3 z-10">
+                        {t("property.available")}
+                      </span>
+
+                      <div
+                        className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-24 bg-gradient-to-t from-navy-light/90 to-transparent"
+                        aria-hidden
+                      />
+
+                      <div className="absolute bottom-3 left-3 z-10 flex flex-wrap items-baseline gap-x-1 gap-y-0">
+                        <span className="font-mono text-lg font-semibold text-gold drop-shadow-md">
+                          {compactPrice(prop.price)} AED
+                        </span>
+                        {prop.listing_type === "rent" ? (
+                          <span className="text-xs text-slate">
+                            {t("property.perYear")}
+                          </span>
+                        ) : null}
+                      </div>
+                    </div>
+
+                    <div className="flex flex-1 flex-col p-5">
+                      <Link
+                        href={`/properties/${prop.slug}`}
+                        className="group/card block min-w-0 flex-1"
+                      >
+                        <h3 className="mb-1 font-display text-lg font-bold text-pearl transition-colors group-hover:text-brand-blue-light">
+                          {prop.title}
+                        </h3>
+                        <p className="mb-4 text-sm text-slate">{prop.neighborhood}</p>
+
+                        <div className="mb-4 flex flex-wrap items-center gap-4 text-xs text-slate">
+                          {prop.bedrooms > 0 && (
+                            <span className="flex items-center gap-1">
+                              <Bed className="h-3.5 w-3.5" /> {prop.bedrooms}
+                            </span>
+                          )}
+                          <span className="flex items-center gap-1">
+                            <Bath className="h-3.5 w-3.5" /> {prop.bathrooms}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Maximize className="h-3.5 w-3.5" />{" "}
+                            {formatArea(prop.area)}
+                          </span>
+                        </div>
+
+                        <span className="inline-flex items-center gap-1 text-sm font-semibold text-brand-blue transition-all group-hover/card:gap-2">
+                          {t("property.viewDetails")}
+                          <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover/card:translate-x-1" />
+                        </span>
+                      </Link>
+
+                      <div className="mt-auto flex items-center justify-between gap-3 border-t border-brand-blue/10 pt-3">
+                        <span className="font-mono text-xs text-slate-dark">
+                          {t("property.ref")} {prop.reference_number || "—"}
+                        </span>
+                        <button
+                          type="button"
+                          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-brand-blue/15 text-pearl transition hover:bg-brand-blue/10"
+                          aria-label={tp("saveProperty")}
+                          onClick={(e) => e.preventDefault()}
+                        >
+                          <Heart className="h-4 w-4" strokeWidth={1.75} />
+                        </button>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
         </div>
 
         {!loading && filtered.length === 0 && (
           <div className="flex flex-col items-center justify-center py-24 text-center">
-            <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl border border-brand-blue/20 bg-brand-blue/10 text-brand-blue-light">
-              <Building2 className="h-10 w-10 opacity-90" />
-            </div>
-            <h2 className="mb-2 font-display text-xl font-bold text-pearl md:text-2xl">
+            <SearchX
+              className="mx-auto mb-4 h-16 w-16 text-slate-dark"
+              strokeWidth={1.25}
+            />
+            <h2 className="mb-2 font-display text-xl text-pearl">
               {tp("emptyTitle")}
             </h2>
             <p className="mb-8 max-w-md text-sm text-slate">{tp("emptyHint")}</p>
-            <button type="button" onClick={clearFilters} className="btn-primary">
-              {tp("clearFilters")}
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="btn-outline"
+            >
+              {tp("emptyClearAll")}
             </button>
           </div>
         )}
