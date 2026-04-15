@@ -39,6 +39,14 @@
     "management": {
       "title": "Property Management",
       "desc": "Full-service property management including maintenance, tenant relations, and inspections."
+    },
+    "valuation": {
+      "title": "Property Valuation",
+      "desc": "Get an accurate market valuation based on recent transactions, trends, and comparable analysis."
+    },
+    "advisory": {
+      "title": "Investment Advisory",
+      "desc": "Strategic guidance for building and optimising your Dubai property portfolio with data-driven insights."
     }
   },
   "stats": {
@@ -74,7 +82,41 @@
     "inquire": "Inquire Now",
     "viewDetails": "View Details",
     "similar": "Similar Properties",
-    "ref": "Ref"
+    "ref": "Ref",
+    "featured": "Featured",
+    "perYear": "/yr"
+  },
+  "propertiesPage": {
+    "countFound": "{count, plural, one {# property found} other {# properties found}}",
+    "filters": "Filters",
+    "filtersTitle": "Refine search",
+    "clearAll": "Clear all",
+    "clearFilters": "Clear filters",
+    "typeLabel": "Property type",
+    "priceLabel": "Price range",
+    "areaLabel": "Area / neighborhood",
+    "areaAll": "All areas",
+    "viewGrid": "Grid view",
+    "viewList": "List view",
+    "emptyTitle": "No properties match your filters",
+    "emptyHint": "Try widening your search or reset filters to see all listings.",
+    "loading": "Loading…",
+    "closeFilters": "Close filters",
+    "saveProperty": "Save property",
+    "apply": "Apply filters",
+    "priceSale": {
+      "lt1m": "< 1M",
+      "m1m3m": "1M – 3M",
+      "m3m5m": "3M – 5M",
+      "m5m10m": "5M – 10M",
+      "gt10m": "10M+"
+    },
+    "priceRent": {
+      "lt50k": "< 50K",
+      "k50k100k": "50K – 100K",
+      "k100k150k": "100K – 150K",
+      "gt150k": "150K+"
+    }
   },
   "contact": {
     "title": "Get in Touch",
@@ -85,5 +127,133 @@
     "intent": "I'm interested in...",
     "send": "Send Message",
     "success": "Message sent successfully! We'll be in touch shortly."
+  },
+  "aboutPage": {
+    "heroLabel": "About MULKEEF",
+    "heroTitle": "Your trusted partner in Dubai real estate",
+    "heroSubtitle": "MULKEEF Real Estate is a Dubai-based agency committed to empowering clients with trusted, innovative, and dynamic property solutions — from search to signature.",
+    "storyLabel": "Our Story",
+    "storyTitle": "Built in Dubai, for Dubai",
+    "storyP1": "MULKEEF was founded with a clear mission: to make Dubai’s property market more transparent, human, and efficient. What began as a focused boutique team has grown into a full-service brokerage trusted by buyers, renters, and investors across the emirate.",
+    "storyP2": "We combine deep neighbourhood knowledge with disciplined process — so every recommendation is grounded in data, regulation, and your personal goals.",
+    "storyP3": "Today, our mission remains the same: deliver exceptional outcomes with integrity, speed, and a relentless focus on client success.",
+    "storyPhotoAlt": "MULKEEF team",
+    "valuesLabel": "Our Values",
+    "valuesTitle": "What sets us apart",
+    "valueTrustTitle": "Trust & transparency",
+    "valueTrustDesc": "Every transaction is handled with complete transparency. No hidden fees, no surprises — honest, professional service backed by RERA licensing.",
+    "valueClientTitle": "Client-first approach",
+    "valueClientDesc": "Your goals drive everything we do. We listen, understand your needs, and deliver tailored solutions for your lifestyle and investment objectives.",
+    "valueExpertTitle": "Market expertise",
+    "valueExpertDesc": "Deep knowledge of Dubai’s communities, trends, and opportunities. Our agents specialise in specific neighbourhoods for unmatched local insight.",
+    "valueInnovTitle": "Innovation & technology",
+    "valueInnovDesc": "We use modern tools to streamline your journey — virtual tours, digital workflows, and seamless communication from first enquiry to handover.",
+    "teamLabel": "Our people",
+    "teamTitle": "Meet our team",
+    "teamRera": "RERA",
+    "teamLanguages": "Languages",
+    "reraBannerKicker": "Regulatory excellence",
+    "reraBannerTitle": "RERA licensed brokerage",
+    "reraBannerBody": "MULKEEF Real Estate LLC is fully licensed and regulated by the Real Estate Regulatory Agency (RERA) of Dubai. All our agents hold valid RERA broker cards and complete annual recertification to stay aligned with the latest regulations.",
+    "agent1": {
+      "name": "Sarah Al-Mansoori",
+      "title": "Senior Sales Consultant",
+      "rera": "BRN-45821",
+      "languages": "English, Arabic, French"
+    },
+    "agent2": {
+      "name": "James Mitchell",
+      "title": "Leasing Manager",
+      "rera": "BRN-51209",
+      "languages": "English, Hindi"
+    },
+    "agent3": {
+      "name": "Elena Rossi",
+      "title": "Off-Plan Specialist",
+      "rera": "BRN-48933",
+      "languages": "English, Italian, Russian"
+    },
+    "agent4": {
+      "name": "Omar Hassan",
+      "title": "Head of Client Relations",
+      "rera": "BRN-50177",
+      "languages": "English, Arabic, Urdu"
+    }
+  },
+  "servicesPage": {
+    "heroSubtitle": "From finding your dream home to managing your investment portfolio, MULKEEF provides end-to-end real estate services tailored to the Dubai market.",
+    "featuresHeading": "What you get",
+    "learnMore": "Learn more",
+    "buyIntro": "From luxury villas on Palm Jumeirah to modern apartments in JVC, we help you find the perfect property that matches your lifestyle and investment goals.",
+    "rentIntro": "Discover rental properties across Dubai's most desirable communities. We handle everything from viewing to Ejari registration.",
+    "offplanIntro": "Access exclusive off-plan projects from Dubai's top developers. We provide detailed ROI analysis and guide you through payment plans.",
+    "managementIntro": "Full-service property management for landlords. We take care of your property so you can focus on returns.",
+    "valuationIntro": "Get an accurate market valuation of your property based on recent transactions, market trends, and comparable analysis.",
+    "advisoryIntro": "Strategic investment guidance for building and optimising your Dubai property portfolio with data-driven insights.",
+    "buyFeatures": [
+      "Exclusive listings not available on portals",
+      "Personalised property matching",
+      "Negotiation and price analysis",
+      "End-to-end transaction support",
+      "Mortgage advisory referrals"
+    ],
+    "rentFeatures": [
+      "Verified listings across all communities",
+      "Virtual tours available",
+      "Ejari registration support",
+      "Lease negotiation",
+      "Move-in condition inspections"
+    ],
+    "offplanFeatures": [
+      "Direct developer relationships",
+      "Payment plan optimisation",
+      "ROI and rental yield analysis",
+      "Construction progress tracking",
+      "Post-handover management"
+    ],
+    "managementFeatures": [
+      "Tenant sourcing and screening",
+      "Rent collection and remittance",
+      "Maintenance coordination",
+      "Check-in / check-out inspections",
+      "Annual RERA index compliance"
+    ],
+    "valuationFeatures": [
+      "Comparative market analysis",
+      "Recent transaction data",
+      "Area trend forecasting",
+      "Investment performance review",
+      "Free no-obligation assessment"
+    ],
+    "advisoryFeatures": [
+      "Portfolio diversification strategy",
+      "Market entry timing advice",
+      "Area growth potential analysis",
+      "Tax and visa benefit guidance",
+      "Golden Visa property selection"
+    ],
+    "whyLabel": "Why choose MULKEEF",
+    "whyTitle": "The partner Dubai investors trust",
+    "whyReraTitle": "RERA licensed",
+    "whyReraDesc": "Fully regulated brokerage with certified brokers and transparent processes on every transaction.",
+    "whyLangTitle": "10+ languages",
+    "whyLangDesc": "Multilingual team serving global clients with clear communication in the language you prefer.",
+    "whyFastTitle": "Fast response",
+    "whyFastDesc": "Average reply within 30 minutes during business hours — so you never miss an opportunity.",
+    "faqLabel": "FAQ",
+    "faqTitle": "Common questions about Dubai property",
+    "faqSubtitle": "Quick answers on buying, renting, and investing in the UAE.",
+    "faq1Q": "Can foreigners buy property in Dubai?",
+    "faq1A": "Yes. Freehold areas allow foreign ownership with clear title registration through the Dubai Land Department. We guide you through eligibility, fees, and documentation.",
+    "faq2Q": "What costs should I budget beyond the purchase price?",
+    "faq2A": "Typical costs include DLD transfer fee (normally 4% of price), trustee fees, agency commission where applicable, and mortgage-related fees if financing. We provide a transparent estimate up front.",
+    "faq3Q": "How long does a property purchase take?",
+    "faq3A": "Cash purchases can complete in a few weeks once agreed. Mortgaged purchases depend on bank approval timelines. We coordinate all parties to keep momentum.",
+    "faq4Q": "What is Ejari and do I need it for renting?",
+    "faq4A": "Ejari is Dubai's rental contract registration system. It protects both landlord and tenant and is required for many government services. We assist with registration as part of our rental service.",
+    "faq5Q": "Is off-plan property risky?",
+    "faq5A": "Off-plan carries construction and market timing risks. We help you assess developer track record, escrow protections, payment plans, and projected yields so you can decide with confidence.",
+    "faq6Q": "Do you only work in certain communities?",
+    "faq6A": "We cover major Dubai communities and focus on areas that match your brief — from Marina and Downtown to Arabian Ranches, JVC, and emerging corridors."
   }
 }

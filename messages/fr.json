@@ -39,7 +39,91 @@
     "management": {
       "title": "Gestion locative",
       "desc": "Service complet de gestion incluant maintenance, relations locataires et inspections."
+    },
+    "valuation": {
+      "title": "Estimation de bien",
+      "desc": "Obtenez une estimation de marché précise basée sur les transactions récentes, les tendances et l'analyse comparative."
+    },
+    "advisory": {
+      "title": "Conseil en investissement",
+      "desc": "Un accompagnement stratégique pour constituer et optimiser votre portefeuille immobilier à Dubai avec une approche data-driven."
     }
+  },
+  "servicesPage": {
+    "heroSubtitle": "De la recherche de votre résidence idéale à la gestion de votre portefeuille, MULKEEF propose des services immobiliers complets adaptés au marché de Dubai.",
+    "featuresHeading": "Ce que vous obtenez",
+    "learnMore": "En savoir plus",
+    "buyIntro": "Des villas de prestige sur Palm Jumeirah aux appartements modernes à JVC, nous vous aidons à trouver le bien qui correspond à votre style de vie et à vos objectifs d'investissement.",
+    "rentIntro": "Découvrez des biens à louer dans les quartiers les plus recherchés de Dubai. Nous gérons les visites jusqu'à l'enregistrement Ejari.",
+    "offplanIntro": "Accédez à des projets off-plan exclusifs auprès des promoteurs majeurs de Dubai. Nous analysons le ROI et vous guidons sur les plans de paiement.",
+    "managementIntro": "Gestion locative complète pour les propriétaires. Nous prenons soin de votre bien pour que vous vous concentriez sur la performance.",
+    "valuationIntro": "Obtenez une estimation de marché fiable basée sur les transactions récentes, les tendances du marché et l'analyse des comparables.",
+    "advisoryIntro": "Un conseil stratégique pour construire et optimiser votre portefeuille immobilier à Dubai avec des analyses fondées sur les données.",
+    "buyFeatures": [
+      "Annonces exclusives absentes des portails grand public",
+      "Matching personnalisé de biens",
+      "Négociation et analyse de prix",
+      "Accompagnement transaction de bout en bout",
+      "Orientation vers des partenaires crédit / financement"
+    ],
+    "rentFeatures": [
+      "Annonces vérifiées sur l'ensemble des communautés",
+      "Visites virtuelles disponibles",
+      "Accompagnement Ejari",
+      "Négociation de bail",
+      "Contrôles à l'entrée / sortie des lieux"
+    ],
+    "offplanFeatures": [
+      "Relations directes avec les promoteurs",
+      "Optimisation des plans de paiement",
+      "Analyse ROI et rendement locatif",
+      "Suivi de l'avancement des chantiers",
+      "Gestion post-remise des clés"
+    ],
+    "managementFeatures": [
+      "Recherche et sélection de locataires",
+      "Encaissement des loyers et reversements",
+      "Coordination de la maintenance",
+      "États des lieux entrée / sortie",
+      "Conformité annuelle index RERA"
+    ],
+    "valuationFeatures": [
+      "Analyse comparative de marché",
+      "Données de transactions récentes",
+      "Projections de tendance par zone",
+      "Revue de performance d'investissement",
+      "Estimation gratuite sans engagement"
+    ],
+    "advisoryFeatures": [
+      "Stratégie de diversification de portefeuille",
+      "Conseil sur le timing d'entrée sur le marché",
+      "Analyse du potentiel de croissance par zone",
+      "Orientation fiscalité / visa (à titre informatif)",
+      "Sélection de biens éligibles Golden Visa"
+    ],
+    "whyLabel": "Pourquoi MULKEEF",
+    "whyTitle": "Le partenaire de confiance des investisseurs à Dubai",
+    "whyReraTitle": "Agréé RERA",
+    "whyReraDesc": "Courtage réglementé, courtiers certifiés et processus transparents sur chaque transaction.",
+    "whyLangTitle": "10+ langues",
+    "whyLangDesc": "Équipe multilingue pour des échanges clairs dans la langue de votre choix.",
+    "whyFastTitle": "Réactivité",
+    "whyFastDesc": "Réponse moyenne sous 30 minutes aux heures ouvrées — pour ne manquer aucune opportunité.",
+    "faqLabel": "FAQ",
+    "faqTitle": "Questions fréquentes sur l'immobilier à Dubai",
+    "faqSubtitle": "Réponses rapides sur l'achat, la location et l'investissement aux Émirats.",
+    "faq1Q": "Les étrangers peuvent-ils acheter à Dubai ?",
+    "faq1A": "Oui. Les zones freehold permettent la pleine propriété avec enregistrement du titre auprès du DLD. Nous vous guidons sur l'éligibilité, les frais et les documents.",
+    "faq2Q": "Quels coûts prévoir en plus du prix d'achat ?",
+    "faq2A": "On retrouve notamment les frais DLD (souvent 4 % du prix), des frais de trustee, la commission d'agence le cas échéant, et des frais bancaires si financement. Nous fournissons une estimation transparente dès le départ.",
+    "faq3Q": "Combien de temps prend un achat ?",
+    "faq3A": "Un achat comptant peut se conclure en quelques semaines après accord. Avec crédit, les délais dépendent de la banque. Nous coordonnons toutes les parties pour garder le rythme.",
+    "faq4Q": "Qu'est-ce qu'Ejari et est-ce obligatoire à la location ?",
+    "faq4A": "Ejari enregistre le contrat de location à Dubai. Il protège bailleur et locataire et est requis pour de nombreuses démarches. Nous aidons à l'enregistrement dans le cadre de nos services location.",
+    "faq5Q": "L'off-plan est-il risqué ?",
+    "faq5A": "Il existe des risques de chantier et de timing de marché. Nous analysons l'historique du promoteur, les protections escrow, les plans de paiement et les rendements projetés pour vous décider sereinement.",
+    "faq6Q": "Travaillez-vous seulement dans certains quartiers ?",
+    "faq6A": "Nous couvrons les principales communautés de Dubai et ciblons les zones alignées avec votre brief — Marina, Downtown, Arabian Ranches, JVC et corridors émergents."
   },
   "stats": {
     "properties": "Biens vendus",
@@ -74,7 +158,93 @@
     "inquire": "Demander des infos",
     "viewDetails": "Voir le détail",
     "similar": "Biens similaires",
-    "ref": "Ref"
+    "ref": "Ref",
+    "featured": "En vedette",
+    "perYear": "/an"
+  },
+  "propertiesPage": {
+    "countFound": "{count, plural, one {# bien trouvé} other {# biens trouvés}}",
+    "filters": "Filtres",
+    "filtersTitle": "Affiner la recherche",
+    "clearAll": "Tout effacer",
+    "clearFilters": "Réinitialiser les filtres",
+    "typeLabel": "Type de bien",
+    "priceLabel": "Fourchette de prix",
+    "areaLabel": "Quartier / zone",
+    "areaAll": "Tous les quartiers",
+    "viewGrid": "Vue grille",
+    "viewList": "Vue liste",
+    "emptyTitle": "Aucun bien ne correspond à vos filtres",
+    "emptyHint": "Élargissez votre recherche ou réinitialisez les filtres pour voir toutes les annonces.",
+    "loading": "Chargement…",
+    "closeFilters": "Fermer les filtres",
+    "saveProperty": "Enregistrer ce bien",
+    "apply": "Appliquer les filtres",
+    "priceSale": {
+      "lt1m": "< 1M",
+      "m1m3m": "1M – 3M",
+      "m3m5m": "3M – 5M",
+      "m5m10m": "5M – 10M",
+      "gt10m": "10M+"
+    },
+    "priceRent": {
+      "lt50k": "< 50K",
+      "k50k100k": "50K – 100K",
+      "k100k150k": "100K – 150K",
+      "gt150k": "150K+"
+    }
+  },
+  "aboutPage": {
+    "heroLabel": "À propos de MULKEEF",
+    "heroTitle": "Votre partenaire de confiance pour l'immobilier à Dubai",
+    "heroSubtitle": "MULKEEF Immobilier est une agence basée à Dubai qui accompagne ses clients avec des solutions immobilières fiables, innovantes et dynamiques — de la recherche à la signature.",
+    "storyLabel": "Notre histoire",
+    "storyTitle": "Nés à Dubai, pour Dubai",
+    "storyP1": "MULKEEF a été fondé avec une mission claire : rendre le marché immobilier de Dubai plus transparent, plus humain et plus efficace. Ce qui a commencé comme une équipe boutique s'est transformé en un courtage complet auquel font confiance acheteurs, locataires et investisseurs dans tout l'émirat.",
+    "storyP2": "Nous combinons une connaissance fine des quartiers avec un processus rigoureux — chaque recommandation s'appuie sur les données, la réglementation et vos objectifs personnels.",
+    "storyP3": "Aujourd'hui, notre mission reste la même : des résultats d'exception avec intégrité, réactivité et une exigence constante au service de nos clients.",
+    "storyPhotoAlt": "Équipe MULKEEF",
+    "valuesLabel": "Nos valeurs",
+    "valuesTitle": "Ce qui nous distingue",
+    "valueTrustTitle": "Confiance et transparence",
+    "valueTrustDesc": "Chaque transaction est menée en toute transparence. Pas de frais cachés, pas de surprises — un service professionnel et honnête, encadré par la licence RERA.",
+    "valueClientTitle": "Le client au centre",
+    "valueClientDesc": "Vos objectifs guident notre action. Nous écoutons, comprenons vos besoins et proposons des solutions sur mesure pour votre style de vie et vos ambitions d'investissement.",
+    "valueExpertTitle": "Expertise du marché",
+    "valueExpertDesc": "Une connaissance approfondie des communautés, des tendances et des opportunités à Dubai. Nos agents se spécialisent par zones pour une expertise locale pointue.",
+    "valueInnovTitle": "Innovation et technologie",
+    "valueInnovDesc": "Nous utilisons des outils modernes pour fluidifier votre parcours — visites virtuelles, parcours numériques et communication fluide de la première prise de contact jusqu'à la remise des clés.",
+    "teamLabel": "Notre équipe",
+    "teamTitle": "Rencontrez l'équipe",
+    "teamRera": "RERA",
+    "teamLanguages": "Langues",
+    "reraBannerKicker": "Excellence réglementaire",
+    "reraBannerTitle": "Courtage agréé RERA",
+    "reraBannerBody": "MULKEEF Real Estate LLC est entièrement agréée et réglementée par la Real Estate Regulatory Agency (RERA) de Dubai. Tous nos agents disposent d'une carte de courtier RERA valide et suivent une recertification annuelle pour rester alignés sur la réglementation en vigueur.",
+    "agent1": {
+      "name": "Sarah Al-Mansoori",
+      "title": "Consultante senior ventes",
+      "rera": "BRN-45821",
+      "languages": "Anglais, arabe, français"
+    },
+    "agent2": {
+      "name": "James Mitchell",
+      "title": "Responsable location",
+      "rera": "BRN-51209",
+      "languages": "Anglais, hindi"
+    },
+    "agent3": {
+      "name": "Elena Rossi",
+      "title": "Spécialiste off-plan",
+      "rera": "BRN-48933",
+      "languages": "Anglais, italien, russe"
+    },
+    "agent4": {
+      "name": "Omar Hassan",
+      "title": "Responsable relations clients",
+      "rera": "BRN-50177",
+      "languages": "Anglais, arabe, ourdou"
+    }
   },
   "contact": {
     "title": "Contactez-nous",
@@ -84,6 +254,36 @@
     "message": "Message",
     "intent": "Je suis intéressé par...",
     "send": "Envoyer",
-    "success": "Message envoyé avec succès ! Nous vous recontactons rapidement."
+    "success": "Message envoyé avec succès ! Nous vous recontactons rapidement.",
+    "brandLabel": "MULKEEF Immobilier",
+    "intro": "Que vous souhaitiez acheter, louer ou investir — notre équipe d'experts certifiés RERA vous accompagne sur le marché immobilier de Dubai avec confiance.",
+    "addressLabel": "Adresse",
+    "addressValue": "Dubai, Émirats arabes unis",
+    "emailLabel": "Email",
+    "emailValue": "info@mulkeef.com",
+    "whatsappLabel": "WhatsApp",
+    "whatsappValue": "+971 58 576 5719",
+    "whatsappCta": "Vous préférez WhatsApp ? Écrivez-nous directement.",
+    "mapTitle": "Localisation",
+    "mapCaption": "Dubai, Émirats arabes unis",
+    "selectIntent": "Choisir une option…",
+    "requiredMark": "Obligatoire",
+    "sending": "Envoi en cours…",
+    "thankYou": "Merci !",
+    "sendAnother": "Envoyer un autre message",
+    "responseBadge": "⚡ Délai de réponse moyen : 30 min",
+    "phoneHint": "Format international, ex. +971 58 576 5719",
+    "buying": "Acheter un bien",
+    "renting": "Louer un bien",
+    "offplan": "Investissement off-plan",
+    "valuation": "Estimation de bien",
+    "general": "Demande générale",
+    "errors": {
+      "nameRequired": "Veuillez indiquer votre nom.",
+      "emailRequired": "Veuillez indiquer votre email.",
+      "emailInvalid": "Veuillez saisir une adresse email valide.",
+      "intentRequired": "Veuillez choisir un sujet.",
+      "submitFailed": "Une erreur s'est produite. Réessayez."
+    }
   }
 }

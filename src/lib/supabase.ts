@@ -194,6 +194,37 @@ export async function getFeaturedProperties(locale: string, limit = 6) {
   return getProperties(locale, { featured: true });
 }
 
+/** Neighborhood / area options for filters (localized names). */
+export async function getAreaGuideOptions(
+  locale: string
+): Promise<{ slug: string; name: string }[]> {
+  const { data, error } = await getSupabase()
+    .from("area_translations")
+    .select(
+      `
+      name,
+      area:area_guides!inner(slug)
+    `
+    )
+    .eq("locale", locale)
+    .order("name");
+
+  if (error) {
+    console.error("Error fetching area guides:", error);
+    return [];
+  }
+
+  return (data || [])
+    .map((row: any) => {
+      const area = Array.isArray(row.area) ? row.area[0] : row.area;
+      return {
+        slug: (area?.slug as string) || "",
+        name: (row.name as string) || "",
+      };
+    })
+    .filter((row) => row.slug && row.name);
+}
+
 export async function submitLead(lead: Lead) {
   const { data, error } = await getSupabase()
     .from("leads")
