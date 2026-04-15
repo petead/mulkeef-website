@@ -1,6 +1,9 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import {
   Search,
@@ -16,6 +19,7 @@ import {
   Heart,
 } from "lucide-react";
 import { Link } from "@/lib/i18n/routing";
+import { getSupabase } from "@/lib/supabase";
 import { WHATSAPP_URL } from "@/lib/utils";
 
 const fadeUp = {
@@ -26,13 +30,43 @@ const fadeUp = {
 
 // Placeholder data until Supabase is connected
 const DEMO_PROPERTIES = [
-  { id: "1", title: "Modern Apartment in JVC", neighborhood: "Jumeirah Village Circle", price: 1200000, bedrooms: 2, bathrooms: 2, area: 1150, type: "sale" as const, status: "available", slug: "modern-apartment-jvc" },
-  { id: "2", title: "Luxury Villa Palm Jumeirah", neighborhood: "Palm Jumeirah", price: 8500000, bedrooms: 5, bathrooms: 6, area: 5200, type: "sale" as const, status: "available", slug: "luxury-villa-palm" },
-  { id: "3", title: "Studio Downtown Dubai", neighborhood: "Downtown Dubai", price: 75000, bedrooms: 0, bathrooms: 1, area: 450, type: "rent" as const, status: "available", slug: "studio-downtown" },
-  { id: "4", title: "Penthouse Business Bay", neighborhood: "Business Bay", price: 12000000, bedrooms: 4, bathrooms: 5, area: 4800, type: "sale" as const, status: "available", slug: "penthouse-business-bay" },
-  { id: "5", title: "Family Townhouse Arabian Ranches", neighborhood: "Arabian Ranches", price: 3200000, bedrooms: 3, bathrooms: 4, area: 2800, type: "sale" as const, status: "available", slug: "townhouse-arabian-ranches" },
-  { id: "6", title: "Marina View Apartment", neighborhood: "Dubai Marina", price: 120000, bedrooms: 1, bathrooms: 1, area: 780, type: "rent" as const, status: "available", slug: "marina-view-apartment" },
+  { id: "1", title: "Modern Apartment in JVC", neighborhood: "Jumeirah Village Circle", price: 1200000, bedrooms: 2, bathrooms: 2, area: 1150, type: "sale" as const, status: "available", slug: "modern-apartment-jvc", images: [] as { url: string; is_cover: boolean; position: number }[] },
+  { id: "2", title: "Luxury Villa Palm Jumeirah", neighborhood: "Palm Jumeirah", price: 8500000, bedrooms: 5, bathrooms: 6, area: 5200, type: "sale" as const, status: "available", slug: "luxury-villa-palm", images: [] as { url: string; is_cover: boolean; position: number }[] },
+  { id: "3", title: "Studio Downtown Dubai", neighborhood: "Downtown Dubai", price: 75000, bedrooms: 0, bathrooms: 1, area: 450, type: "rent" as const, status: "available", slug: "studio-downtown", images: [] as { url: string; is_cover: boolean; position: number }[] },
+  { id: "4", title: "Penthouse Business Bay", neighborhood: "Business Bay", price: 12000000, bedrooms: 4, bathrooms: 5, area: 4800, type: "sale" as const, status: "available", slug: "penthouse-business-bay", images: [] as { url: string; is_cover: boolean; position: number }[] },
+  { id: "5", title: "Family Townhouse Arabian Ranches", neighborhood: "Arabian Ranches", price: 3200000, bedrooms: 3, bathrooms: 4, area: 2800, type: "sale" as const, status: "available", slug: "townhouse-arabian-ranches", images: [] as { url: string; is_cover: boolean; position: number }[] },
+  { id: "6", title: "Marina View Apartment", neighborhood: "Dubai Marina", price: 120000, bedrooms: 1, bathrooms: 1, area: 780, type: "rent" as const, status: "available", slug: "marina-view-apartment", images: [] as { url: string; is_cover: boolean; position: number }[] },
 ];
+
+type HomeFeaturedProperty = (typeof DEMO_PROPERTIES)[number];
+
+function mapFeaturedProperty(row: Record<string, unknown>): HomeFeaturedProperty {
+  const translation = Array.isArray(row.translation)
+    ? (row.translation[0] as Record<string, string> | undefined)
+    : (row.translation as Record<string, string> | undefined);
+  const images = ((row.images as { url: string; is_cover: boolean; position: number }[]) || [])
+    .slice()
+    .sort((a, b) => a.position - b.position);
+
+  return {
+    id: String(row.id),
+    title: translation?.title || String(row.slug),
+    neighborhood: translation?.neighborhood || "",
+    slug: translation?.slug_localized || String(row.slug),
+    price: Number(row.price),
+    bedrooms: Number(row.bedrooms) || 0,
+    bathrooms: Number(row.bathrooms) || 0,
+    area: Number(row.area_sqft) || 0,
+    type: row.listing_type as "sale" | "rent",
+    status: String(row.status || "available"),
+    images,
+  };
+}
+
+function coverImageUrl(images: { url: string; is_cover: boolean; position: number }[]) {
+  const cover = images.find((img) => img.is_cover) ?? images[0];
+  return cover?.url ?? null;
+}
 
 function formatPrice(price: number) {
   if (price >= 1000000) return (price / 1000000).toFixed(1).replace(".0", "") + "M";
@@ -75,6 +109,46 @@ const STATS = [
 
 export default function HomePage() {
   const t = useTranslations();
+  const locale = useLocale();
+  const [featuredProperties, setFeaturedProperties] =
+    useState<HomeFeaturedProperty[]>(DEMO_PROPERTIES);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function fetchFeaturedProperties() {
+      try {
+        const supabase = getSupabase();
+        const { data, error } = await supabase
+          .from("properties")
+          .select(
+            "*, translation:property_translations!inner(*), images:property_images(*)"
+          )
+          .eq("property_translations.locale", locale)
+          .eq("status", "available")
+          .not("published_at", "is", null)
+          .order("featured", { ascending: false })
+          .limit(6);
+
+        if (error) throw error;
+        if (!cancelled && data && data.length > 0) {
+          setFeaturedProperties(
+            data.map((row) => mapFeaturedProperty(row as Record<string, unknown>))
+          );
+        } else if (!cancelled) {
+          setFeaturedProperties(DEMO_PROPERTIES);
+        }
+      } catch (error) {
+        console.error(error);
+        if (!cancelled) setFeaturedProperties(DEMO_PROPERTIES);
+      }
+    }
+
+    fetchFeaturedProperties();
+    return () => {
+      cancelled = true;
+    };
+  }, [locale]);
 
   return (
     <>
@@ -212,13 +286,22 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {DEMO_PROPERTIES.map((prop, i) => (
+            {featuredProperties.map((prop, i) => (
               <article
                 key={prop.id}
                 className="card group relative cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:border-brand-blue/25 hover:shadow-lg"
                 style={{ animationDelay: `${i * 0.1}s` }}
               >
                 <div className="relative h-52 overflow-hidden bg-gradient-to-br from-brand-blue/15 to-gold/5">
+                  {coverImageUrl(prop.images) ? (
+                    <Image
+                      src={coverImageUrl(prop.images)!}
+                      alt={prop.title}
+                      fill
+                      sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                    />
+                  ) : null}
                   <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/20 to-brand-blue/10 opacity-90 transition-opacity duration-500 group-hover:opacity-100" />
                   <div className="absolute inset-0 bg-navy-gradient opacity-25 transition-opacity duration-500 group-hover:opacity-50" />
 

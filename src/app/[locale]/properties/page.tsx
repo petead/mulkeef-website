@@ -9,6 +9,7 @@ import {
   useState,
 } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import {
   Search,
@@ -229,7 +230,7 @@ function PropertiesPageInner() {
           .select(
             "*, translation:property_translations!inner(*), images:property_images(*)"
           )
-          .eq("property_translations.locale", locale)
+          .eq("property_translations.locale", "en")
           .eq("status", "available")
           .not("published_at", "is", null)
           .order("featured", { ascending: false });
@@ -253,7 +254,7 @@ function PropertiesPageInner() {
     return () => {
       cancelled = true;
     };
-  }, [locale, listingType]);
+  }, [listingType, locale]);
 
   useEffect(() => {
     let cancelled = false;
@@ -665,11 +666,16 @@ function PropertiesPageInner() {
                       )}
                     >
                       {cover ? (
-                        // eslint-disable-next-line @next/next/no-img-element -- remote Supabase / CDN URLs
-                        <img
+                        <Image
                           src={cover}
-                          alt=""
-                          className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                          alt={prop.title}
+                          fill
+                          sizes={
+                            viewMode === "grid"
+                              ? "(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                              : "(min-width: 640px) 320px, 100vw"
+                          }
+                          className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
                         />
                       ) : null}
                       <div

@@ -10,6 +10,14 @@ const nextConfig = {
         protocol: "https",
         hostname: "*.supabase.co",
       },
+      {
+        protocol: "https",
+        hostname: "framerusercontent.com",
+      },
+      {
+        protocol: "https",
+        hostname: "*.framerusercontent.com",
+      },
     ],
     formats: ["image/avif", "image/webp"],
   },
