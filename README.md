@@ -29,7 +29,7 @@ npm install
 supabase/migrations/001_initial_schema.sql
 ```
 
-3. Copy your project credentials from Settings > API
+1. Copy your project credentials from Settings > API
 
 ### 3. Configure environment
 
@@ -81,7 +81,7 @@ mulkeef-website/
 │   │   ├── layout.tsx           # Root layout (fonts, metadata)
 │   │   ├── api/
 │   │   │   └── leads/route.ts   # Lead capture API
-│   │   └── {locale}/
+│   │   └── [locale]/
 │   │       ├── layout.tsx       # Locale layout (i18n, header/footer)
 │   │       ├── page.tsx         # Homepage
 │   │       ├── properties/      # Property listings
@@ -114,45 +114,49 @@ mulkeef-website/
 
 ## Database Schema
 
-| Table | Purpose |
-|-------|---------|
-| `properties` | Core property data (price, beds, type) |
-| `property_translations` | Title, description, meta per locale |
-| `property_images` | Photo gallery |
-| `image_translations` | Alt text per locale |
-| `offplan_projects` | Off-plan developments |
-| `offplan_translations` | Off-plan content per locale |
-| `leads` | Captured leads with source tracking |
-| `seo_pages` | Static pages translated content |
-| `blog_posts` | Blog articles |
-| `blog_translations` | Blog content per locale |
-| `area_guides` | Neighborhood guides |
-| `area_translations` | Area guide content per locale |
-| `rental_contracts` | Agent tool: rental contracts |
-| `listing_requests` | Agent tool: new listing submissions |
+
+| Table                   | Purpose                                |
+| ----------------------- | -------------------------------------- |
+| `properties`            | Core property data (price, beds, type) |
+| `property_translations` | Title, description, meta per locale    |
+| `property_images`       | Photo gallery                          |
+| `image_translations`    | Alt text per locale                    |
+| `offplan_projects`      | Off-plan developments                  |
+| `offplan_translations`  | Off-plan content per locale            |
+| `leads`                 | Captured leads with source tracking    |
+| `seo_pages`             | Static pages translated content        |
+| `blog_posts`            | Blog articles                          |
+| `blog_translations`     | Blog content per locale                |
+| `area_guides`           | Neighborhood guides                    |
+| `area_translations`     | Area guide content per locale          |
+| `rental_contracts`      | Agent tool: rental contracts           |
+| `listing_requests`      | Agent tool: new listing submissions    |
+
 
 ## Brand Palette (Royal Blue)
 
-| Color | Hex | Usage |
-|-------|-----|-------|
+
+| Color        | Hex       | Usage                       |
+| ------------ | --------- | --------------------------- |
 | MULKEEF Blue | `#1E4FD8` | Primary CTA, links, accents |
-| Deep Navy | `#0A1628` | Background |
-| Surface | `#111D33` | Cards, panels |
-| Ice Blue | `#DBEAFE` | Light hover states |
-| Gold | `#D4A853` | Prices, premium highlights |
-| Emerald | `#34D399` | Success, available |
-| Coral | `#F87171` | Sold, alerts |
-| Pearl | `#F8FAFC` | Text on dark |
-| Slate | `#94A3B8` | Secondary text |
+| Deep Navy    | `#0A1628` | Background                  |
+| Surface      | `#111D33` | Cards, panels               |
+| Ice Blue     | `#DBEAFE` | Light hover states          |
+| Gold         | `#D4A853` | Prices, premium highlights  |
+| Emerald      | `#34D399` | Success, available          |
+| Coral        | `#F87171` | Sold, alerts                |
+| Pearl        | `#F8FAFC` | Text on dark                |
+| Slate        | `#94A3B8` | Secondary text              |
+
 
 ## Roadmap
 
-- [x] Phase 1: Project scaffold, DB schema, i18n, layout
-- [ ] Phase 2: Homepage, About, Services, Contact pages
-- [ ] Phase 3: Property listings with filters, detail pages, off-plan
-- [ ] Phase 4: Blog, Area Guides, FAQ, chatbot, gated content
-- [ ] Phase 5: Agent zone (rental contract, listing request), go-live
-- [ ] Phase 6: Zapier→Make migration, auto-translate, analytics, Propview integration
+- Phase 1: Project scaffold, DB schema, i18n, layout
+- Phase 2: Homepage, About, Services, Contact pages
+- Phase 3: Property listings with filters, detail pages, off-plan
+- Phase 4: Blog, Area Guides, FAQ, chatbot, gated content
+- Phase 5: Agent zone (rental contract, listing request), go-live
+- Phase 6: Zapier→Make migration, auto-translate, analytics, Propview integration
 
 ## License
 
