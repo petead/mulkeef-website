@@ -1,6 +1,6 @@
-import { createClient } from "@supabase/supabase-js";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getSupabase } from "@/lib/supabase";
 import PropertyDetailClient, {
   type PropertyDetailAgent,
   type PropertyDetailImage,
@@ -45,15 +45,6 @@ type PropertyTranslationWithJoin = TranslationRow & {
   property: PropertyRow[] | PropertyRow | null;
 };
 
-function getSupabaseServerClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !anon) {
-    throw new Error("Missing Supabase env vars for property detail page");
-  }
-  return createClient(url, anon);
-}
-
 function sanitizeHtml(html?: string | null): string {
   if (!html) return "";
   return html
@@ -74,7 +65,7 @@ function normalizeJoinedProperty(row: PropertyTranslationWithJoin): {
 }
 
 async function fetchPropertyBySlug(locale: string, slug: string) {
-  const supabase = getSupabaseServerClient();
+  const supabase = getSupabase();
 
   async function queryForLocale(targetLocale: string) {
     const { data, error } = await supabase
@@ -115,7 +106,7 @@ async function fetchSimilarProperties(params: {
   price: number;
   locale: string;
 }): Promise<SimilarPropertyCard[]> {
-  const supabase = getSupabaseServerClient();
+  const supabase = getSupabase();
   const minPrice = Math.max(0, Math.floor(params.price * 0.7));
   const maxPrice = Math.ceil(params.price * 1.3);
 

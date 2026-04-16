@@ -3,6 +3,7 @@
     "buy": "Buy",
     "rent": "Rent",
     "offplan": "Off-Plan",
+    "areas": "Areas",
     "services": "Services",
     "about": "About",
     "blog": "Insights",
@@ -18,7 +19,8 @@
   "featured": {
     "label": "Featured Properties",
     "title": "Handpicked for You",
-    "viewAll": "View All Properties"
+    "viewAll": "View All Properties",
+    "empty": "No published listings at the moment. Please check back soon."
   },
   "services": {
     "label": "Our Services",
@@ -58,7 +60,15 @@
     "contactUs": "Contact Us",
     "followUs": "Follow Us",
     "rights": "All rights reserved.",
-    "rera": "RERA Licensed Brokerage"
+    "rera": "RERA Licensed Brokerage",
+    "colProperties": "Properties",
+    "colCompany": "Company",
+    "colLegal": "Legal",
+    "allProperties": "All properties",
+    "faq": "FAQ",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "legalSoon": "Coming soon"
   },
   "property": {
     "bedrooms": "Bedrooms",
@@ -73,7 +83,84 @@
     "inquire": "Inquire Now",
     "viewDetails": "View Details",
     "similar": "Similar Properties",
-    "ref": "Ref"
+    "ref": "Ref",
+    "featured": "Featured",
+    "perYear": "/yr",
+    "favorite": "Add to favorites"
+  },
+  "propertiesPage": {
+    "countFound": "{count, plural, one {# property found} other {# properties found}}",
+    "filters": "Filters",
+    "filtersTitle": "Refine search",
+    "clearAll": "Clear all",
+    "clearFilters": "Clear filters",
+    "typeLabel": "Property type",
+    "priceLabel": "Price range",
+    "areaLabel": "Area / neighborhood",
+    "areaAll": "All areas",
+    "viewGrid": "Grid view",
+    "viewList": "List view",
+    "emptyTitle": "No properties found",
+    "emptyHint": "Try adjusting your filters",
+    "emptyClearAll": "Clear all filters",
+    "priceAny": "Any",
+    "loading": "Loading…",
+    "closeFilters": "Close filters",
+    "saveProperty": "Save property",
+    "apply": "Apply filters",
+    "priceSale": {
+      "lt1m": "< 1M",
+      "m1m3m": "1M – 3M",
+      "m3m5m": "3M – 5M",
+      "m5m10m": "5M – 10M",
+      "gt10m": "10M+"
+    },
+    "priceRent": {
+      "lt50k": "< 50K",
+      "k50k100k": "50K – 100K",
+      "k100k150k": "100K – 150K",
+      "gt150k": "150K+"
+    }
+  },
+  "aboutPage": {
+    "heroLabel": "About MULKEEF",
+    "heroTitle": "Your trusted partner in Dubai real estate",
+    "heroSubtitle": "MULKEEF Real Estate LLC is a RERA-licensed brokerage in Dubai, UAE. We deliver buy, rent, off-plan, and property management services with an editorial, client-first approach — from first brief to handover.",
+    "storyLabel": "Our Story",
+    "storyTitle": "Built in Dubai, for Dubai",
+    "storyP1": "MULKEEF Real Estate LLC was founded to make Dubai’s property market clearer and more human. Led by Pierre Adam and supported by Noman Mirza, our team pairs disciplined process with neighbourhood-level insight for buyers, renters, and investors.",
+    "storyP2": "We combine deep community knowledge with transparent advice — every recommendation is grounded in regulation, data, and your personal goals.",
+    "storyP3": "Our focus stays simple: exceptional outcomes with integrity, speed, and long-term trust. Buy, rent, off-plan, and property management — all under one Dubai-based team.",
+    "storyPhotoAlt": "MULKEEF team",
+    "valuesLabel": "Our Values",
+    "valuesTitle": "What sets us apart",
+    "valueTrustTitle": "Trust & transparency",
+    "valueTrustDesc": "Every transaction is handled with complete transparency. No hidden fees, no surprises — honest, professional service backed by RERA licensing.",
+    "valueClientTitle": "Client-first approach",
+    "valueClientDesc": "Your goals drive everything we do. We listen, understand your needs, and deliver tailored solutions for your lifestyle and investment objectives.",
+    "valueExpertTitle": "Market expertise",
+    "valueExpertDesc": "Deep knowledge of Dubai’s communities, trends, and opportunities. Our agents specialise in specific neighbourhoods for unmatched local insight.",
+    "valueInnovTitle": "Innovation & technology",
+    "valueInnovDesc": "We use modern tools to streamline your journey — virtual tours, digital workflows, and seamless communication from first enquiry to handover.",
+    "teamLabel": "Our people",
+    "teamTitle": "Meet our team",
+    "teamRera": "RERA",
+    "teamLanguages": "Languages",
+    "reraBannerKicker": "Regulatory excellence",
+    "reraBannerTitle": "RERA licensed brokerage",
+    "reraBannerBody": "MULKEEF Real Estate LLC is fully licensed and regulated by the Real Estate Regulatory Agency (RERA) of Dubai. All our agents hold valid RERA broker cards and complete annual recertification to stay aligned with the latest regulations.",
+    "agent1": {
+      "name": "Pierre Adam",
+      "title": "Founder",
+      "rera": "RERA licensed",
+      "languages": "English, French, Arabic"
+    },
+    "agent2": {
+      "name": "Noman Mirza",
+      "title": "Broker",
+      "rera": "RERA licensed",
+      "languages": "English, Urdu, Arabic"
+    }
   },
   "contact": {
     "title": "Get in Touch",

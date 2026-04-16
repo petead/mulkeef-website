@@ -213,4 +213,71 @@
     opacity: 0.025;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
+
+  .prose-editorial p {
+    font-family: var(--font-jakarta), system-ui, sans-serif;
+    font-size: 17px;
+    font-weight: 300;
+    line-height: 1.8;
+    color: var(--pearl);
+    margin-bottom: 20px;
+  }
+
+  .prose-editorial h2 {
+    font-family: var(--font-cormorant), serif;
+    font-size: 32px;
+    font-weight: 500;
+    margin-top: 48px;
+    margin-bottom: 16px;
+    color: var(--white);
+  }
+
+  .prose-editorial h3 {
+    font-family: var(--font-cormorant), serif;
+    font-size: 24px;
+    font-weight: 500;
+    margin-top: 32px;
+    margin-bottom: 12px;
+    color: var(--white);
+  }
+
+  .prose-editorial ul,
+  .prose-editorial ol {
+    font-size: 17px;
+    line-height: 1.8;
+    color: var(--slate);
+    margin-bottom: 20px;
+    padding-left: 1.25rem;
+  }
+
+  .prose-editorial li::marker {
+    color: var(--gold);
+  }
+
+  .prose-editorial blockquote {
+    border-left: 2px solid var(--gold);
+    padding-left: 24px;
+    font-family: var(--font-cormorant), serif;
+    font-size: 22px;
+    font-style: italic;
+    color: var(--pearl);
+    margin: 24px 0;
+  }
+
+  .prose-editorial a {
+    color: var(--gold);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .prose-editorial a:hover {
+    color: var(--gold-light);
+  }
+
+  .prose-editorial img {
+    width: 100%;
+    height: auto;
+    border-radius: 2px;
+    margin: 32px 0;
+  }
 }

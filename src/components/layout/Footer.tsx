@@ -35,8 +35,8 @@ export default function Footer() {
   return (
     <footer className="divider bg-[#060D1B]">
       <div className="mx-auto max-w-[1280px] px-5 pb-10 pt-16 md:px-8 md:pt-20">
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-4">
-          <div>
+        <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-5">
+          <div className="lg:col-span-1">
             <p className="font-display text-3xl tracking-[2px] text-white">MULKEEF</p>
             <p className="mt-4 max-w-xs text-[13px] font-light leading-relaxed text-slate-dark">
               {t("tagline")}
@@ -44,37 +44,93 @@ export default function Footer() {
           </div>
 
           <div>
-            <p className="label">Properties</p>
+            <p className="label">{t("colProperties")}</p>
             <div className="mt-5 space-y-3">
-              <Link href="/properties?listing=sale" className="block text-[13px] font-light text-slate-dark transition-colors hover:text-pearl">
+              <Link
+                href="/properties?type=sale"
+                className="block text-[13px] font-light text-slate-dark transition-colors hover:text-pearl"
+              >
                 {nav("buy")}
               </Link>
-              <Link href="/properties?listing=rent" className="block text-[13px] font-light text-slate-dark transition-colors hover:text-pearl">
+              <Link
+                href="/properties?type=rent"
+                className="block text-[13px] font-light text-slate-dark transition-colors hover:text-pearl"
+              >
                 {nav("rent")}
               </Link>
-              <Link href="/properties" className="block text-[13px] font-light text-slate-dark transition-colors hover:text-pearl">
-                {t("quickLinks")}
+              <Link
+                href="/off-plan"
+                className="block text-[13px] font-light text-slate-dark transition-colors hover:text-pearl"
+              >
+                {nav("offplan")}
+              </Link>
+              <Link
+                href="/areas"
+                className="block text-[13px] font-light text-slate-dark transition-colors hover:text-pearl"
+              >
+                {nav("areas")}
+              </Link>
+              <Link
+                href="/properties"
+                className="block text-[13px] font-light text-slate-dark transition-colors hover:text-pearl"
+              >
+                {t("allProperties")}
               </Link>
             </div>
           </div>
 
           <div>
-            <p className="label">Company</p>
+            <p className="label">{t("colCompany")}</p>
             <div className="mt-5 space-y-3">
-              <Link href="/about" className="block text-[13px] font-light text-slate-dark transition-colors hover:text-pearl">
+              <Link
+                href="/about"
+                className="block text-[13px] font-light text-slate-dark transition-colors hover:text-pearl"
+              >
                 {nav("about")}
               </Link>
-              <Link href="/services" className="block text-[13px] font-light text-slate-dark transition-colors hover:text-pearl">
+              <Link
+                href="/services"
+                className="block text-[13px] font-light text-slate-dark transition-colors hover:text-pearl"
+              >
                 {nav("services")}
               </Link>
-              <Link href="/contact" className="block text-[13px] font-light text-slate-dark transition-colors hover:text-pearl">
+              <Link
+                href="/blog"
+                className="block text-[13px] font-light text-slate-dark transition-colors hover:text-pearl"
+              >
+                {nav("blog")}
+              </Link>
+              <Link
+                href="/contact"
+                className="block text-[13px] font-light text-slate-dark transition-colors hover:text-pearl"
+              >
                 {nav("contact")}
+              </Link>
+              <Link
+                href="/faq"
+                className="block text-[13px] font-light text-slate-dark transition-colors hover:text-pearl"
+              >
+                {t("faq")}
               </Link>
             </div>
           </div>
 
           <div>
-            <p className="label">Connect</p>
+            <p className="label">{t("colLegal")}</p>
+            <div className="mt-5 space-y-3 text-[13px] font-light text-slate-dark">
+              <p>
+                {t("privacy")}{" "}
+                <span className="text-slate">({t("legalSoon")})</span>
+              </p>
+              <p>
+                {t("terms")}{" "}
+                <span className="text-slate">({t("legalSoon")})</span>
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <p className="label">{t("followUs")}</p>
             <div className="mt-5 space-y-3">
               {connectLinks.map((item) => (
                 <a

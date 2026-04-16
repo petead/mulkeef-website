@@ -5,15 +5,13 @@ import { useMessages, useTranslations } from "next-intl";
 import { ArrowRight } from "lucide-react";
 import { Link } from "@/lib/i18n/routing";
 
-type ServiceSlug = "buy" | "rent" | "offplan" | "management" | "valuation" | "advisory";
+type ServiceSlug = "buy" | "rent" | "offplan" | "management";
 
-const SERVICE_ROWS: { slug: ServiceSlug; no: string }[] = [
-  { slug: "buy", no: "01" },
-  { slug: "rent", no: "02" },
-  { slug: "offplan", no: "03" },
-  { slug: "management", no: "04" },
-  { slug: "valuation", no: "05" },
-  { slug: "advisory", no: "06" },
+const SERVICE_ROWS: { slug: ServiceSlug; no: string; href: string }[] = [
+  { slug: "buy", no: "01", href: "/properties?type=sale" },
+  { slug: "rent", no: "02", href: "/properties?type=rent" },
+  { slug: "offplan", no: "03", href: "/off-plan" },
+  { slug: "management", no: "04", href: "/contact" },
 ];
 
 function readFeatures(messages: Record<string, unknown>, slug: ServiceSlug): string[] {
@@ -81,7 +79,7 @@ export default function ServicesPage() {
                         ))}
                       </ul>
                       <Link
-                        href="/contact"
+                        href={row.href}
                         className="mt-6 inline-flex items-center gap-2 text-xs uppercase tracking-[2px] text-gold"
                       >
                         {ts("learnMore")} <ArrowRight className="h-4 w-4" />

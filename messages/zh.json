@@ -1,11 +1,11 @@
 {
-  "nav": { "buy": "购买", "rent": "租赁", "offplan": "期房", "services": "服务", "about": "关于我们", "blog": "资讯", "contact": "联系我们" },
+  "nav": { "buy": "购买", "rent": "租赁", "offplan": "期房", "areas": "区域", "services": "服务", "about": "关于我们", "blog": "资讯", "contact": "联系我们" },
   "hero": { "label": "迪拜房地产", "title": "在迪拜找到您的理想住所", "subtitle": "值得信赖的专业团队，为您提供迪拜顶级社区的购买、租赁和投资服务。", "searchPlaceholder": "按社区、项目或类型搜索...", "searchBtn": "搜索" },
   "featured": { "label": "精选房源", "title": "为您精选", "viewAll": "查看所有房源" },
   "services": { "label": "我们的服务", "title": "全面的房地产解决方案", "buy": { "title": "购买房产", "desc": "在迪拜最受欢迎的社区找到您理想的住宅或投资物业。" }, "rent": { "title": "租赁房产", "desc": "发现适合您生活方式的租赁物业，从公寓到豪华别墅。" }, "offplan": { "title": "期房投资", "desc": "独家期房项目，提供极具吸引力的付款计划和高投资回报。" }, "management": { "title": "物业管理", "desc": "全方位物业管理服务，包括维护、租户关系和房屋检查。" } },
   "stats": { "properties": "已售房产", "clients": "满意客户", "experience": "年经验", "communities": "覆盖社区" },
   "cta": { "title": "准备开启您的房产之旅？", "subtitle": "获取RERA认证专家的免费咨询，无任何义务。", "btn": "预约免费咨询", "whatsapp": "WhatsApp咨询" },
-  "footer": { "tagline": "您在迪拜值得信赖的房地产合作伙伴。", "quickLinks": "快速链接", "contactUs": "联系我们", "followUs": "关注我们", "rights": "版权所有。", "rera": "RERA持牌经纪" },
-  "property": { "bedrooms": "卧室", "bathrooms": "浴室", "area": "面积", "price": "价格", "available": "可用", "sold": "已售", "rented": "已租", "forSale": "出售", "forRent": "出租", "inquire": "立即咨询", "viewDetails": "查看详情", "similar": "相似房源", "ref": "编号" },
+  "footer": { "tagline": "您在迪拜值得信赖的房地产合作伙伴。", "quickLinks": "快速链接", "contactUs": "联系我们", "followUs": "关注我们", "rights": "版权所有。", "rera": "RERA持牌经纪", "colProperties": "房源", "colCompany": "公司", "colLegal": "法律信息", "allProperties": "全部房源", "faq": "常见问题", "privacy": "隐私", "terms": "条款", "legalSoon": "即将推出" },
+  "property": { "bedrooms": "卧室", "bathrooms": "浴室", "area": "面积", "price": "价格", "available": "可用", "sold": "已售", "rented": "已租", "forSale": "出售", "forRent": "出租", "inquire": "立即咨询", "viewDetails": "查看详情", "similar": "相似房源", "ref": "编号", "featured": "精选", "perYear": "/年", "favorite": "收藏" },
   "contact": { "title": "联系我们", "name": "姓名", "email": "邮箱", "phone": "电话", "message": "留言", "intent": "我对以下感兴趣...", "send": "发送", "success": "消息发送成功！我们将尽快与您联系。" }
 }

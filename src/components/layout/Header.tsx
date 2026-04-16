@@ -38,12 +38,12 @@ export default function Header() {
   }, [mobileOpen]);
 
   const navItems = [
-    { label: t("buy"), href: "/properties?listing=sale" },
-    { label: t("rent"), href: "/properties?listing=rent" },
+    { label: t("buy"), href: "/properties?type=sale" },
+    { label: t("rent"), href: "/properties?type=rent" },
     { label: t("offplan"), href: "/off-plan" },
-    { label: t("services"), href: "/services" },
+    { label: t("areas"), href: "/areas" },
+    { label: t("blog"), href: "/blog" },
     { label: t("about"), href: "/about" },
-    { label: t("contact"), href: "/contact" },
   ];
 
   const switchLocale = (nextLocale: Locale) => {

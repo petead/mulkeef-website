@@ -53,7 +53,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${cormorant.variable} ${jakarta.variable} ${jetbrains.variable} font-body antialiased`}
       >

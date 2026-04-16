@@ -1,8 +1,8 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
-let _supabase: SupabaseClient | null = null;
 let _serverSupabase: SupabaseClient | null = null;
 
+/** Public (anon) client — safe for server and browser. */
 export function getSupabase(): SupabaseClient {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -11,10 +11,7 @@ export function getSupabase(): SupabaseClient {
       "Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY",
     );
   }
-  if (!_supabase) {
-    _supabase = createClient(url, anonKey);
-  }
-  return _supabase;
+  return createClient(url, anonKey);
 }
 
 // Server-side client with service role for admin operations
@@ -40,6 +37,7 @@ export interface Property {
   id: string;
   slug: string;
   price: number;
+  display_price?: string | null;
   currency: string;
   bedrooms: number;
   bathrooms: number;
@@ -113,71 +111,98 @@ export async function getProperties(
     bedrooms?: number;
     neighborhood?: string;
     featured?: boolean;
-  }
+  },
 ) {
-  let query = getSupabase()
-    .from("properties")
-    .select(
-      `
+  const supabase = getSupabase();
+  const select = `
       *,
-      translation:property_translations!inner(*),
+      translations:property_translations!inner(*),
       images:property_images(*)
-    `
-    )
-    .eq("property_translations.locale", locale)
-    .eq("status", "available")
-    .not("published_at", "is", null)
-    .order("featured", { ascending: false })
-    .order("published_at", { ascending: false });
+    `;
 
-  if (filters?.listing_type) {
-    query = query.eq("listing_type", filters.listing_type);
-  }
-  if (filters?.property_type) {
-    query = query.eq("property_type", filters.property_type);
-  }
-  if (filters?.min_price) {
-    query = query.gte("price", filters.min_price);
-  }
-  if (filters?.max_price) {
-    query = query.lte("price", filters.max_price);
-  }
-  if (filters?.bedrooms) {
-    query = query.eq("bedrooms", filters.bedrooms);
-  }
-  if (filters?.featured) {
-    query = query.eq("featured", true);
-  }
+  const build = (loc: string) => {
+    let query = supabase
+      .from("properties")
+      .select(select)
+      .eq("property_translations.locale", loc)
+      .eq("status", "available")
+      .not("published_at", "is", null)
+      .order("featured", { ascending: false })
+      .order("published_at", { ascending: false });
 
-  const { data, error } = await query;
+    if (filters?.listing_type) {
+      query = query.eq("listing_type", filters.listing_type);
+    }
+    if (filters?.property_type) {
+      query = query.eq("property_type", filters.property_type);
+    }
+    if (filters?.min_price) {
+      query = query.gte("price", filters.min_price);
+    }
+    if (filters?.max_price) {
+      query = query.lte("price", filters.max_price);
+    }
+    if (filters?.bedrooms !== undefined) {
+      query = query.eq("bedrooms", filters.bedrooms);
+    }
+    if (filters?.featured) {
+      query = query.eq("featured", true);
+    }
+    return query;
+  };
+
+  let { data, error } = await build(locale);
 
   if (error) {
     console.error("Error fetching properties:", error);
     return [];
   }
 
-  return (data || []).map((p: any) => ({
-    ...p,
-    translation: Array.isArray(p.translation) ? p.translation[0] : p.translation,
-    images: (p.images || []).sort((a: any, b: any) => a.position - b.position),
-  })) as PropertyWithDetails[];
+  if (!data?.length && locale !== "en") {
+    const fb = await build("en");
+    if (fb.error) {
+      console.error("Error fetching properties (en fallback):", fb.error);
+      return [];
+    }
+    data = fb.data;
+  }
+
+  return (data || []).map((p: any) => {
+    const tr = p.translations;
+    const translation = Array.isArray(tr) ? tr[0] : tr;
+    const { translations: _t, ...rest } = p;
+    return {
+      ...rest,
+      translation,
+      images: (p.images || []).sort((a: any, b: any) => a.position - b.position),
+    };
+  }) as PropertyWithDetails[];
 }
 
 export async function getPropertyBySlug(locale: string, slug: string) {
-  const { data, error } = await getSupabase()
-    .from("property_translations")
-    .select(
-      `
+  const supabase = getSupabase();
+  const run = (loc: string) =>
+    supabase
+      .from("property_translations")
+      .select(
+        `
       *,
       property:properties!inner(
         *,
         images:property_images(*)
       )
-    `
-    )
-    .eq("locale", locale)
-    .eq("slug_localized", slug)
-    .single();
+    `,
+      )
+      .eq("locale", loc)
+      .eq("slug_localized", slug)
+      .single();
+
+  let { data, error } = await run(locale);
+  if ((error || !data) && locale !== "en") {
+    const fb = await run("en");
+    data = fb.data;
+    error = fb.error;
+  }
 
   if (error || !data) return null;
 
@@ -185,7 +210,7 @@ export async function getPropertyBySlug(locale: string, slug: string) {
     ...data.property,
     translation: { ...data, property: undefined },
     images: (data.property.images || []).sort(
-      (a: any, b: any) => a.position - b.position
+      (a: any, b: any) => a.position - b.position,
     ),
   } as PropertyWithDetails;
 }
@@ -196,22 +221,35 @@ export async function getFeaturedProperties(locale: string, limit = 6) {
 
 /** Neighborhood / area options for filters (localized names). */
 export async function getAreaGuideOptions(
-  locale: string
+  locale: string,
 ): Promise<{ slug: string; name: string }[]> {
-  const { data, error } = await getSupabase()
-    .from("area_translations")
-    .select(
-      `
+  const supabase = getSupabase();
+  const run = (loc: string) =>
+    supabase
+      .from("area_translations")
+      .select(
+        `
       name,
       area:area_guides!inner(slug)
-    `
-    )
-    .eq("locale", locale)
-    .order("name");
+    `,
+      )
+      .eq("locale", loc)
+      .order("name");
+
+  let { data, error } = await run(locale);
 
   if (error) {
     console.error("Error fetching area guides:", error);
     return [];
+  }
+
+  if (!data?.length && locale !== "en") {
+    const fb = await run("en");
+    if (fb.error) {
+      console.error("Error fetching area guides (en fallback):", fb.error);
+      return [];
+    }
+    data = fb.data;
   }
 
   return (data || [])

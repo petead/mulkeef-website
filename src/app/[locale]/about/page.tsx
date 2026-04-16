@@ -70,6 +70,38 @@ export default function AboutPage() {
       <section className="section-tight divider">
         <div className="mx-auto max-w-[1280px] px-5 md:px-8">
           <Reveal>
+            <div className="label mb-3">{ta("teamLabel")}</div>
+            <h2 className="title-lg mb-10">{ta("teamTitle")}</h2>
+          </Reveal>
+          <div className="grid grid-cols-1 gap-10 border-y border-brand-blue/10 py-10 md:grid-cols-2">
+            {(["agent1", "agent2"] as const).map((key, i) => (
+              <Reveal key={key} delay={i * 0.08}>
+                <article className="px-0 md:px-4">
+                  <p className="font-mono text-xs uppercase tracking-[2px] text-brand-blue">
+                    {ta(`${key}.rera` as "aboutPage.agent1.rera")}
+                  </p>
+                  <h3 className="mt-4 font-display text-4xl leading-none text-pearl">
+                    {ta(`${key}.name` as "aboutPage.agent1.name")}
+                  </h3>
+                  <p className="mt-2 text-sm uppercase tracking-[2px] text-gold">
+                    {ta(`${key}.title` as "aboutPage.agent1.title")}
+                  </p>
+                  <p className="mt-6 text-sm leading-relaxed text-slate">
+                    <span className="text-[11px] uppercase tracking-[2px] text-slate-dark">
+                      {ta("teamLanguages")}:{" "}
+                    </span>
+                    {ta(`${key}.languages` as "aboutPage.agent1.languages")}
+                  </p>
+                </article>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section-tight divider">
+        <div className="mx-auto max-w-[1280px] px-5 md:px-8">
+          <Reveal>
             <div className="mb-10">
               <div className="label mb-3">{ta("valuesLabel")}</div>
               <h2 className="title-lg">{ta("valuesTitle")}</h2>
