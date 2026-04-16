@@ -33,13 +33,11 @@ export async function generateMetadata({
 
 export default async function LocaleLayout({
   children,
-  params,
+  params: { locale },
 }: {
   children: React.ReactNode;
-  params: Promise<{ locale: string }>;
+  params: { locale: string };
 }) {
-  const { locale } = await params;
-
   if (!routing.locales.includes(locale as (typeof locales)[number])) {
     notFound();
   }
@@ -52,7 +50,7 @@ export default async function LocaleLayout({
       <NextIntlClientProvider messages={messages}>
         <Header />
         <main className="min-h-screen">{children}</main>
-        <Footer />
+        <Footer locale={locale} />
         <a
           href="https://wa.me/971585765719"
           target="_blank"

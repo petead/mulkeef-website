@@ -5,6 +5,10 @@ import { Link } from "@/lib/i18n/routing";
 import { Instagram, Linkedin, MessageCircle, Youtube } from "lucide-react";
 import { WHATSAPP_URL } from "@/lib/utils";
 
+type FooterProps = {
+  locale: string;
+};
+
 const connectLinks = [
   {
     label: "Instagram",
@@ -28,7 +32,7 @@ const connectLinks = [
   },
 ];
 
-export default function Footer() {
+export default function Footer({ locale }: FooterProps) {
   const t = useTranslations("footer");
   const nav = useTranslations("nav");
 
@@ -47,30 +51,35 @@ export default function Footer() {
             <p className="label">{t("colProperties")}</p>
             <div className="mt-5 space-y-3">
               <Link
+                locale={locale}
                 href="/properties?type=sale"
                 className="block text-[13px] font-light text-slate-dark transition-colors hover:text-pearl"
               >
                 {nav("buy")}
               </Link>
               <Link
+                locale={locale}
                 href="/properties?type=rent"
                 className="block text-[13px] font-light text-slate-dark transition-colors hover:text-pearl"
               >
                 {nav("rent")}
               </Link>
               <Link
+                locale={locale}
                 href="/off-plan"
                 className="block text-[13px] font-light text-slate-dark transition-colors hover:text-pearl"
               >
                 {nav("offplan")}
               </Link>
               <Link
+                locale={locale}
                 href="/areas"
                 className="block text-[13px] font-light text-slate-dark transition-colors hover:text-pearl"
               >
                 {nav("areas")}
               </Link>
               <Link
+                locale={locale}
                 href="/properties"
                 className="block text-[13px] font-light text-slate-dark transition-colors hover:text-pearl"
               >
@@ -83,30 +92,35 @@ export default function Footer() {
             <p className="label">{t("colCompany")}</p>
             <div className="mt-5 space-y-3">
               <Link
+                locale={locale}
                 href="/about"
                 className="block text-[13px] font-light text-slate-dark transition-colors hover:text-pearl"
               >
                 {nav("about")}
               </Link>
               <Link
+                locale={locale}
                 href="/services"
                 className="block text-[13px] font-light text-slate-dark transition-colors hover:text-pearl"
               >
                 {nav("services")}
               </Link>
               <Link
+                locale={locale}
                 href="/blog"
                 className="block text-[13px] font-light text-slate-dark transition-colors hover:text-pearl"
               >
                 {nav("blog")}
               </Link>
               <Link
+                locale={locale}
                 href="/contact"
                 className="block text-[13px] font-light text-slate-dark transition-colors hover:text-pearl"
               >
                 {nav("contact")}
               </Link>
               <Link
+                locale={locale}
                 href="/faq"
                 className="block text-[13px] font-light text-slate-dark transition-colors hover:text-pearl"
               >
