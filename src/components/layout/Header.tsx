@@ -111,7 +111,7 @@ export default function Header() {
             </div>
 
             <Link href="/contact" className="btn-gold">
-              INQUIRE
+              {t("inquire")}
             </Link>
           </div>
 
@@ -131,7 +131,7 @@ export default function Header() {
           <div className="mx-auto flex h-full max-w-[1280px] flex-col px-6 pb-10 pt-24">
             <div className="mb-8 flex items-center justify-between">
               <span className="text-xs uppercase tracking-[3px] text-slate">
-                Navigation
+                {t("navigation")}
               </span>
               <button
                 type="button"
@@ -178,7 +178,7 @@ export default function Header() {
               onClick={() => setMobileOpen(false)}
               className="btn-gold mt-8 w-full text-center"
             >
-              INQUIRE
+              {t("inquire")}
             </Link>
           </div>
         </div>

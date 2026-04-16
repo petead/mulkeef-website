@@ -7,23 +7,42 @@
     "services": "Services",
     "about": "About",
     "blog": "Insights",
-    "contact": "Contact"
+    "contact": "Contact",
+    "inquire": "INQUIRE",
+    "navigation": "Navigation"
+  },
+  "common": {
+    "forSale": "FOR SALE",
+    "forRent": "FOR RENT",
+    "learnMore": "Learn more",
+    "scroll": "Scroll"
+  },
+  "why": {
+    "label": "WHY MULKEEF",
+    "title": "Your trusted partner for<br></br><accent>real estate in Dubai</accent>",
+    "badgeRera": "RERA LICENSED",
+    "badgeLanguages": "10+ LANGUAGES",
+    "badgeExecution": "FAST EXECUTION"
   },
   "hero": {
-    "label": "Dubai Real Estate",
-    "title": "Find Your Dream Property in Dubai",
+    "label": "LUXURY REAL ESTATE",
+    "title": "Discover\nExceptional\nLiving in Dubai",
     "subtitle": "Trusted expertise for buying, renting, and investing in Dubai's most prestigious communities.",
     "searchPlaceholder": "Search by community, project, or type...",
-    "searchBtn": "Search"
+    "searchBtn": "Search",
+    "ctaPrimary": "VIEW PROPERTIES",
+    "ctaSecondary": "BOOK CONSULTATION",
+    "fallbackImageAlt": "Dubai property"
   },
   "featured": {
-    "label": "Featured Properties",
-    "title": "Handpicked for You",
-    "viewAll": "View All Properties",
+    "label": "FEATURED",
+    "title": "Handpicked <accent>Properties</accent>",
+    "viewAll": "View All",
     "empty": "No published listings at the moment. Please check back soon."
   },
   "services": {
-    "label": "Our Services",
+    "label": "SERVICES",
+    "eyebrow": "Our Services",
     "title": "Comprehensive Real Estate Solutions",
     "buy": {
       "title": "Buy Property",
@@ -49,7 +68,7 @@
     "communities": "Communities Covered"
   },
   "cta": {
-    "title": "Ready to Start Your Property Journey?",
+    "title": "Begin your <accent>property journey</accent>",
     "subtitle": "Get expert guidance from our RERA-certified agents. Free consultation, no obligation.",
     "btn": "Book a Free Consultation",
     "whatsapp": "Chat on WhatsApp"
@@ -73,6 +92,10 @@
   "property": {
     "bedrooms": "Bedrooms",
     "bathrooms": "Bathrooms",
+    "bedShort": "Bed",
+    "bathShort": "Bath",
+    "sqft": "sqft",
+    "yearly": "Yearly",
     "area": "Area",
     "price": "Price",
     "available": "Available",

@@ -46,7 +46,7 @@ export default function ServicesPage() {
         <div className="mx-auto max-w-[1280px] px-5 md:px-8">
           <Reveal>
             <div className="label-line label mb-5">
-              <span>{t("services.label")}</span>
+              <span>{t("services.eyebrow")}</span>
             </div>
             <h1 className="title-xl max-w-[900px]">{t("services.title")}</h1>
             <p className="mt-6 max-w-[640px] text-base text-slate">{ts("heroSubtitle")}</p>

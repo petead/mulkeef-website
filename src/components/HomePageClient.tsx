@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo } from "react";
+import { Fragment, useMemo } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { ArrowRight, Globe2, ShieldCheck, Zap } from "lucide-react";
@@ -41,11 +41,15 @@ function Reveal({
 export default function HomePageClient({
   featured,
   heroImage,
+  heroImageAlt,
 }: {
   featured: HomePropertyCard[];
   heroImage: string | null;
+  heroImageAlt: string;
 }) {
   const t = useTranslations();
+  const tProperty = useTranslations("property");
+  const tCommon = useTranslations("common");
 
   const { scrollY } = useScroll();
   const heroImageY = useTransform(scrollY, [0, 800], [0, 110]);
@@ -54,6 +58,10 @@ export default function HomePageClient({
     () => heroImage ?? coverImageUrl(featured[0]?.images ?? []),
     [heroImage, featured],
   );
+
+  const heroTitleLines = t("hero.title").split("\n").filter((l) => l.trim().length > 0);
+  const heroAccentLineIndex =
+    heroTitleLines.length >= 3 ? 1 : heroTitleLines.length === 2 ? 1 : -1;
 
   return (
     <div className="bg-[#060D1B] pt-20">
@@ -65,7 +73,7 @@ export default function HomePageClient({
           >
             <Image
               src={heroCover}
-              alt={featured[0]?.title || "Dubai Property"}
+              alt={featured[0]?.title || heroImageAlt}
               fill
               priority
               sizes="100vw"
@@ -83,17 +91,22 @@ export default function HomePageClient({
           <Reveal>
             <div className="label-line label mb-8">
               <span className="w-12" />
-              <span>LUXURY REAL ESTATE</span>
+              <span>{t("hero.label")}</span>
             </div>
           </Reveal>
 
           <Reveal delay={0.1}>
             <h1 className="title-xl max-w-[700px]">
-              Discover
-              <br />
-              <span className="title-italic">Exceptional</span>
-              <br />
-              Living in Dubai
+              {heroTitleLines.map((line, i) => (
+                <Fragment key={`${i}-${line}`}>
+                  {i > 0 ? <br /> : null}
+                  {i === heroAccentLineIndex ? (
+                    <span className="title-italic">{line}</span>
+                  ) : (
+                    line
+                  )}
+                </Fragment>
+              ))}
             </h1>
           </Reveal>
 
@@ -106,10 +119,10 @@ export default function HomePageClient({
           <Reveal delay={0.3}>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link href="/properties" className="btn-gold">
-                VIEW PROPERTIES
+                {t("hero.ctaPrimary")}
               </Link>
               <Link href="/contact" className="btn-outline">
-                BOOK CONSULTATION
+                {t("hero.ctaSecondary")}
               </Link>
             </div>
           </Reveal>
@@ -140,7 +153,7 @@ export default function HomePageClient({
             transition={{ delay: 1.2, duration: 1.2 }}
           />
           <span className="text-[9px] uppercase tracking-[3px] text-slate">
-            Scroll
+            {tCommon("scroll")}
           </span>
         </div>
       </section>
@@ -150,17 +163,21 @@ export default function HomePageClient({
           <Reveal className="mb-12 flex items-end justify-between gap-8">
             <div>
               <div className="label-line label mb-4">
-                <span>FEATURED</span>
+                <span>{t("featured.label")}</span>
               </div>
               <h2 className="title-lg">
-                Handpicked <span className="title-italic">Properties</span>
+                {t.rich("featured.title", {
+                  accent: (chunks) => (
+                    <span className="title-italic">{chunks}</span>
+                  ),
+                })}
               </h2>
             </div>
             <Link
               href="/properties"
               className="inline-flex items-center gap-2 text-sm uppercase tracking-[2px] text-gold"
             >
-              View All <ArrowRight className="h-4 w-4" />
+              {t("featured.viewAll")} <ArrowRight className="h-4 w-4" />
             </Link>
           </Reveal>
 
@@ -199,7 +216,9 @@ export default function HomePageClient({
                               : "border border-pearl/30 bg-pearl/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[2px] text-pearl backdrop-blur-sm"
                           }
                         >
-                          {prop.listingType === "sale" ? "FOR SALE" : "FOR RENT"}
+                          {prop.listingType === "sale"
+                            ? tCommon("forSale")
+                            : tCommon("forRent")}
                         </span>
                       </div>
 
@@ -209,12 +228,17 @@ export default function HomePageClient({
                         </p>
                         <h3 className="title-md text-white">{prop.title}</h3>
                         <p className="mt-2 opacity-0 transition-opacity delay-75 duration-300 group-hover:opacity-100 text-xs text-slate">
-                          {prop.bedrooms > 0 ? `${prop.bedrooms} Bed · ` : ""}
-                          {prop.bathrooms} Bath · {prop.areaSqft.toLocaleString()} sqft
+                          {prop.bedrooms > 0
+                            ? `${prop.bedrooms} ${tProperty("bedShort")} · `
+                            : ""}
+                          {prop.bathrooms} {tProperty("bathShort")} ·{" "}
+                          {prop.areaSqft.toLocaleString()} {tProperty("sqft")}
                         </p>
                         <p className="price mt-3">
                           {prop.priceLabel}
-                          {prop.priceSuffix}
+                          {prop.listingType === "rent" && prop.priceSuffix
+                            ? ` · ${tProperty("yearly")}`
+                            : null}
                         </p>
                       </div>
                     </Link>
@@ -230,7 +254,7 @@ export default function HomePageClient({
         <div className="mx-auto w-full max-w-[1280px] px-5 md:px-8">
           <Reveal className="mb-10">
             <div className="label-line label mb-4">
-              <span>SERVICES</span>
+              <span>{t("services.label")}</span>
             </div>
           </Reveal>
           <div className="grid grid-cols-1 divide-y divide-brand-blue/10 border-y border-brand-blue/10 md:grid-cols-4 md:divide-x md:divide-y-0">
@@ -245,7 +269,8 @@ export default function HomePageClient({
                     {t(`services.${key}.desc`)}
                   </p>
                   <p className="mt-8 inline-flex items-center gap-2 text-xs uppercase tracking-[2px] text-gold">
-                    Learn more <ArrowRight className="h-3.5 w-3.5" />
+                    {tCommon("learnMore")}{" "}
+                    <ArrowRight className="h-3.5 w-3.5" />
                   </p>
                 </article>
               </Reveal>
@@ -259,21 +284,24 @@ export default function HomePageClient({
         <div className="relative mx-auto w-full max-w-[980px] px-5 text-center md:px-8">
           <Reveal className="mb-5 flex items-center justify-center gap-3">
             <span className="h-px w-12 bg-gold" />
-            <span className="label">WHY MULKEEF</span>
+            <span className="label">{t("why.label")}</span>
             <span className="h-px w-12 bg-gold" />
           </Reveal>
           <Reveal delay={0.1}>
             <h2 className="title-lg">
-              Your trusted partner for
-              <br />
-              <span className="title-italic">real estate in Dubai</span>
+              {t.rich("why.title", {
+                accent: (chunks) => (
+                  <span className="title-italic">{chunks}</span>
+                ),
+                br: () => <br />,
+              })}
             </h2>
           </Reveal>
           <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-3">
             {[
-              { icon: ShieldCheck, label: "RERA LICENSED" },
-              { icon: Globe2, label: "10+ LANGUAGES" },
-              { icon: Zap, label: "FAST EXECUTION" },
+              { icon: ShieldCheck, label: t("why.badgeRera") },
+              { icon: Globe2, label: t("why.badgeLanguages") },
+              { icon: Zap, label: t("why.badgeExecution") },
             ].map((item, idx) => (
               <Reveal key={item.label} delay={0.2 + idx * 0.08}>
                 <div className="flex items-center justify-center gap-2 border border-brand-blue/10 px-4 py-4 text-[11px] uppercase tracking-[2px] text-pearl">
@@ -290,7 +318,11 @@ export default function HomePageClient({
         <div className="mx-auto max-w-[900px] px-5 text-center md:px-8">
           <Reveal>
             <h2 className="title-lg">
-              Begin your <span className="title-italic">property journey</span>
+              {t.rich("cta.title", {
+                accent: (chunks) => (
+                  <span className="title-italic">{chunks}</span>
+                ),
+              })}
             </h2>
           </Reveal>
           <Reveal delay={0.1}>
