@@ -8,21 +8,28 @@
     "about": "About",
     "blog": "Insights",
     "contact": "Contact",
-    "inquire": "INQUIRE",
+    "inquire": "Inquire",
     "navigation": "Navigation"
   },
   "common": {
-    "forSale": "FOR SALE",
-    "forRent": "FOR RENT",
+    "forSale": "For Sale",
+    "forRent": "For Rent",
+    "bed": "Bed",
+    "beds": "Beds",
+    "bath": "Bath",
+    "baths": "Baths",
+    "sqft": "sqft",
+    "yearly": "Yearly",
+    "studio": "Studio",
     "learnMore": "Learn more",
     "scroll": "Scroll"
   },
   "why": {
-    "label": "WHY MULKEEF",
-    "title": "Your trusted partner for<br></br><accent>real estate in Dubai</accent>",
-    "badgeRera": "RERA LICENSED",
-    "badgeLanguages": "10+ LANGUAGES",
-    "badgeExecution": "FAST EXECUTION"
+    "label": "Why MULKEEF",
+    "title": "Your trusted partner for real estate in Dubai",
+    "rera": "RERA Licensed",
+    "languages": "10+ Languages",
+    "speed": "Fast Execution"
   },
   "hero": {
     "label": "LUXURY REAL ESTATE",
@@ -30,8 +37,8 @@
     "subtitle": "Trusted expertise for buying, renting, and investing in Dubai's most prestigious communities.",
     "searchPlaceholder": "Search by community, project, or type...",
     "searchBtn": "Search",
-    "ctaPrimary": "VIEW PROPERTIES",
-    "ctaSecondary": "BOOK CONSULTATION",
+    "ctaPrimary": "View Properties",
+    "ctaSecondary": "Book Consultation",
     "fallbackImageAlt": "Dubai property"
   },
   "featured": {
@@ -112,9 +119,21 @@
     "favorite": "Add to favorites"
   },
   "propertiesPage": {
-    "countFound": "{count, plural, one {# property found} other {# properties found}}",
+    "title": "Curated Properties",
+    "listing": "Listing",
+    "countFound": "{count, plural, one {# property} other {# properties}}",
     "filters": "Filters",
-    "filtersTitle": "Refine search",
+    "filtersTitle": "Filters",
+    "all": "All",
+    "type": "Type",
+    "bedrooms": "Bedrooms",
+    "forSaleTab": "For sale",
+    "forRentTab": "For rent",
+    "typeApartment": "Apartment",
+    "typeVilla": "Villa",
+    "typeTownhouse": "Townhouse",
+    "typeStudio": "Studio",
+    "typeOffice": "Office",
     "clearAll": "Clear all",
     "clearFilters": "Clear filters",
     "typeLabel": "Property type",

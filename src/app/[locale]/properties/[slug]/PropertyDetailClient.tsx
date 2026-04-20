@@ -228,7 +228,7 @@ export default function PropertyDetailClient({
   return (
     <div className="bg-[#060D1B] pt-24">
       <div className="mx-auto max-w-[1280px] px-5 pt-5 text-[11px] tracking-[0.3px] text-slate md:px-8">
-        <span>{tp("filtersTitle")}</span>
+        <span>{tp("listing")}</span>
         <span className="mx-2 text-gold">·</span>
         <span>{property.listingType === "sale" ? t("property.forSale") : t("property.forRent")}</span>
         <span className="mx-2 text-gold">·</span>

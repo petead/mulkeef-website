@@ -40,6 +40,7 @@ function PropertiesGrid({
   properties: ListingPropertyCard[];
 }) {
   const t = useTranslations();
+  const tc = useTranslations("common");
   const searchParams = useSearchParams();
   const q = (searchParams.get("q") || "").trim().toLowerCase();
 
@@ -96,7 +97,7 @@ function PropertiesGrid({
                       : "border border-pearl/30 bg-pearl/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[2px] text-pearl"
                   }
                 >
-                  {prop.listingType === "sale" ? "FOR SALE" : "FOR RENT"}
+                  {prop.listingType === "sale" ? tc("forSale") : tc("forRent")}
                 </span>
               </div>
 
@@ -109,20 +110,30 @@ function PropertiesGrid({
                 </h3>
                 <div className="mt-2 flex items-center gap-3 text-xs text-slate opacity-0 transition-opacity duration-400 group-hover:opacity-100">
                   {prop.bedrooms > 0 ? (
-                    <span>{prop.bedrooms} Bed</span>
+                    <span>
+                      {prop.bedrooms}{" "}
+                      {prop.bedrooms === 1 ? tc("bed") : tc("beds")}
+                    </span>
                   ) : (
-                    <span>Studio</span>
+                    <span>{tc("studio")}</span>
                   )}
                   <span>·</span>
-                  <span>{prop.bathrooms} Bath</span>
+                  <span>
+                    {prop.bathrooms}{" "}
+                    {prop.bathrooms === 1 ? tc("bath") : tc("baths")}
+                  </span>
                   <span>·</span>
-                  <span>{prop.areaSqft.toLocaleString()} sqft</span>
+                  <span>
+                    {prop.areaSqft.toLocaleString()} {tc("sqft")}
+                  </span>
                 </div>
 
                 <div className="mt-4 flex items-center justify-between">
                   <p className="price">
                     {prop.priceLabel}
-                    {prop.priceSuffix}
+                    {prop.listingType === "rent" && prop.priceSuffix
+                      ? ` · ${tc("yearly")}`
+                      : null}
                   </p>
                   <span className="inline-flex items-center gap-1 text-xs uppercase tracking-[2px] text-gold opacity-0 transition-opacity duration-400 group-hover:opacity-100">
                     {t("property.viewDetails")}
@@ -222,9 +233,7 @@ export default function PropertiesPageClient({
           <div className="label-line label mb-4">
             <span>{tp("filtersTitle")}</span>
           </div>
-          <h1 className="title-lg mb-3">
-            Curated <span className="title-italic">Properties</span>
-          </h1>
+          <h1 className="title-lg mb-3">{tp("title")}</h1>
           <p className="text-sm text-slate">
             {tp("countFound", { count: visibleCount })}
           </p>

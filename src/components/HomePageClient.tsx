@@ -229,15 +229,22 @@ export default function HomePageClient({
                         <h3 className="title-md text-white">{prop.title}</h3>
                         <p className="mt-2 opacity-0 transition-opacity delay-75 duration-300 group-hover:opacity-100 text-xs text-slate">
                           {prop.bedrooms > 0
-                            ? `${prop.bedrooms} ${tProperty("bedShort")} · `
-                            : ""}
-                          {prop.bathrooms} {tProperty("bathShort")} ·{" "}
-                          {prop.areaSqft.toLocaleString()} {tProperty("sqft")}
+                            ? `${prop.bedrooms} ${
+                                prop.bedrooms === 1
+                                  ? tCommon("bed")
+                                  : tCommon("beds")
+                              } · `
+                            : `${tCommon("studio")} · `}
+                          {prop.bathrooms}{" "}
+                          {prop.bathrooms === 1
+                            ? tCommon("bath")
+                            : tCommon("baths")}{" "}
+                          · {prop.areaSqft.toLocaleString()} {tCommon("sqft")}
                         </p>
                         <p className="price mt-3">
                           {prop.priceLabel}
                           {prop.listingType === "rent" && prop.priceSuffix
-                            ? ` · ${tProperty("yearly")}`
+                            ? ` · ${tCommon("yearly")}`
                             : null}
                         </p>
                       </div>
@@ -288,20 +295,13 @@ export default function HomePageClient({
             <span className="h-px w-12 bg-gold" />
           </Reveal>
           <Reveal delay={0.1}>
-            <h2 className="title-lg">
-              {t.rich("why.title", {
-                accent: (chunks) => (
-                  <span className="title-italic">{chunks}</span>
-                ),
-                br: () => <br />,
-              })}
-            </h2>
+            <h2 className="title-lg">{t("why.title")}</h2>
           </Reveal>
           <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-3">
             {[
-              { icon: ShieldCheck, label: t("why.badgeRera") },
-              { icon: Globe2, label: t("why.badgeLanguages") },
-              { icon: Zap, label: t("why.badgeExecution") },
+              { icon: ShieldCheck, label: t("why.rera") },
+              { icon: Globe2, label: t("why.languages") },
+              { icon: Zap, label: t("why.speed") },
             ].map((item, idx) => (
               <Reveal key={item.label} delay={0.2 + idx * 0.08}>
                 <div className="flex items-center justify-center gap-2 border border-brand-blue/10 px-4 py-4 text-[11px] uppercase tracking-[2px] text-pearl">
